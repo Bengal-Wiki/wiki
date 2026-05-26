@@ -11,6 +11,44 @@ interface Props {
 
 const { title, image, image_type = 'generic', image_caption, facts = {} } = Astro.props;
 const factEntries = Object.entries(facts);
+
+/**
+ * processLinks — converts fact values to HTML with clickable links.
+ *
+ * Supported input formats (can be combined):
+ *   [Label](https://example.com)   → Markdown hyperlink
+ *   https://example.com            → bare URL (auto-linked)
+ *   user@example.com               → email (auto-linked with mailto:)
+ *   <br> / <br/>                   → HTML line breaks (passed through)
+ *
+ * All external links open in a new tab with rel="noopener noreferrer".
+ */
+function processLinks(raw: string): string {
+	let result = String(raw);
+
+	// 1. Markdown links: [label](url) — handle first so bare-URL pass doesn't double-process
+	result = result.replace(
+		/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)/g,
+		(_, label, url) => {
+			const isEmail = url.startsWith('mailto:');
+			return `<a href="${url}"${isEmail ? '' : ' target="_blank" rel="noopener noreferrer"'}>${label}</a>`;
+		}
+	);
+
+	// 2. Bare URLs not already inside an href="…" attribute
+	result = result.replace(
+		/(?<![="'])https?:\/\/[^\s<"')\]]+/g,
+		url => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+	);
+
+	// 3. Bare email addresses not already inside an href="…" attribute
+	result = result.replace(
+		/(?<![="'@\w])([\w.+-]+@[\w-]+\.[\w.]+)/g,
+		(_, email) => `<a href="mailto:${email}">${email}</a>`
+	);
+
+	return result;
+}
 ---
 
 <aside class="wiki-infobox" aria-label={`Quick facts about ${title}`}>
