@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+	<!-- Styled puzzle-sphere globe grid -->
+	<circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#a2a9b1" stroke-width="1.5" />
+	<ellipse cx="30" cy="30" rx="28" ry="10" fill="none" stroke="#eaecf0" stroke-width="1" />
+	<ellipse cx="30" cy="30" rx="10" ry="28" fill="none" stroke="#eaecf0" stroke-width="1" />
+	
+	<!-- Globe horizontal grids -->
+	<line x1="2" y1="30" x2="58" y2="30" stroke="#eaecf0" stroke-width="1" />
+	
+	<!-- Inner puzzle shape layers -->
+	<path d="M12,20 C18,10 42,10 48,20 C50,25 45,35 40,40 C35,45 25,45 20,40 C15,35 10,25 12,20 Z" fill="#ffffff" opacity="0.9" stroke="#72777d" stroke-width="1" />
+	
+	<!-- The beautiful golden letter 'ব' (Bengali B) indicating Bengal -->
+	<text x="30" y="38" text-anchor="middle" font-family="'Noto Serif Bengali', 'Georgia', serif" font-size="24" font-weight="bold" fill="#b11226">ব</text>
+	
+	<!-- A tiny accent representing the Royal Bengal Tiger stripes in the background -->
+	<path d="M42,22 Q46,26 42,30" stroke="#fca311" stroke-width="2.5" stroke-linecap="round" fill="none" />
+	<path d="M45,20 Q49,24 45,28" stroke="#000000" stroke-width="1.5" stroke-linecap="round" fill="none" />
+</svg>

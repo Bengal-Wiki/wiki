@@ -1,0 +1,200 @@
+---
+import SvgPlaceholder from './SvgPlaceholder.astro';
+
+interface Props {
+	title: string;
+	image?: string;
+	image_type?: 'person' | 'monument' | 'nature' | 'map' | 'song' | 'generic';
+	image_caption?: string;
+	facts?: Record<string, string>;
+}
+
+const { title, image, image_type = 'generic', image_caption, facts = {} } = Astro.props;
+const factEntries = Object.entries(facts);
+
+/**
+ * processLinks — converts fact values to HTML with clickable links.
+ *
+ * Supported input formats (can be combined):
+ *   [Label](https://example.com)   → Markdown hyperlink
+ *   https://example.com            → bare URL (auto-linked)
+ *   user@example.com               → email (auto-linked with mailto:)
+ *   <br> / <br/>                   → HTML line breaks (passed through)
+ *
+ * All external links open in a new tab with rel="noopener noreferrer".
+ */
+function processLinks(raw: string): string {
+	let result = String(raw);
+
+	// 1. Markdown links: [label](url) — handle first so bare-URL pass doesn't double-process
+	result = result.replace(
+		/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)/g,
+		(_, label, url) => {
+			const isEmail = url.startsWith('mailto:');
+			return `<a href="${url}"${isEmail ? '' : ' target="_blank" rel="noopener noreferrer"'}>${label}</a>`;
+		}
+	);
+
+	// 2. Bare URLs not already inside an href="…" attribute
+	result = result.replace(
+		/(?<![="'])https?:\/\/[^\s<"')\]]+/g,
+		url => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+	);
+
+	// 3. Bare email addresses not already inside an href="…" attribute
+	result = result.replace(
+		/(?<![="'@\w])([\w.+-]+@[\w-]+\.[\w.]+)/g,
+		(_, email) => `<a href="mailto:${email}">${email}</a>`
+	);
+
+	return result;
+}
+---
+
+<aside class="wiki-infobox" aria-label={`Quick facts about ${title}`}>
+	<div class="infobox-header">
+		<h2 class="infobox-title">{title}</h2>
+	</div>
+	
+	<div class="infobox-image-wrapper">
+		{image ? (
+			<img src={image} alt={title} class="infobox-custom-image" />
+		) : (
+			<SvgPlaceholder type={image_type} title={title} height="190px" width="100%" />
+		)}
+		{image_caption && (
+			<figcaption class="infobox-image-caption">{image_caption}</figcaption>
+		)}
+	</div>
+	
+	{factEntries.length > 0 && (
+		<table class="infobox-table">
+			<tbody>
+				{factEntries.map(([label, value]) => (
+					<tr class="infobox-row">
+						<th scope="row" class="infobox-label">{label}</th>
+						<td class="infobox-value" set:html={processLinks(value)}></td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+	)}
+</aside>
+
+<style>
+	.wiki-infobox {
+		float: right;
+		width: min(300px, 42%);
+		max-width: 300px;
+		min-width: 220px;
+		margin: 0 0 20px 20px;
+		background-color: var(--wiki-highlight);
+		border: 1px solid var(--wiki-border);
+		border-radius: 6px;
+		padding: 12px;
+		font-size: 13px;
+		line-height: 1.5;
+		color: var(--wiki-text);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+		z-index: 10;
+		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.infobox-header {
+		text-align: center;
+		margin-bottom: 10px;
+		border-bottom: 1px solid var(--wiki-border-light);
+		padding-bottom: 8px;
+	}
+
+	.infobox-title {
+		font-family: var(--wiki-font-sans);
+		font-size: 16px;
+		font-weight: 700;
+		color: #000000;
+		border: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.infobox-image-wrapper {
+		width: 100%;
+		max-width: 100%;
+		text-align: center;
+		margin-bottom: 12px;
+		overflow: hidden;
+		border-radius: 4px;
+	}
+
+	.infobox-image-caption {
+		font-size: 11px;
+		color: var(--wiki-text-muted);
+		margin-top: 6px;
+		padding: 0 4px;
+		line-height: 1.4;
+	}
+
+	.infobox-table {
+		width: 100%;
+		border-collapse: collapse;
+		border-top: 1px solid var(--wiki-border-light);
+	}
+
+	.infobox-row {
+		border-bottom: 1px solid var(--wiki-border-light);
+	}
+
+	.infobox-row:last-child {
+		border-bottom: none;
+	}
+
+	.infobox-label {
+		text-align: left;
+		font-weight: 600;
+		color: var(--wiki-text-muted);
+		padding: 6px 8px 6px 0;
+		width: 38%;
+		vertical-align: top;
+		word-break: break-word;
+		overflow-wrap: break-word;
+	}
+
+	.infobox-value {
+		padding: 6px 0 6px 8px;
+		width: 62%;
+		vertical-align: top;
+		word-break: break-word;
+		overflow-wrap: break-word;
+		hyphens: auto;
+	}
+
+	.infobox-custom-image {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		height: auto;
+		max-height: 280px;
+		object-fit: cover;
+		border-radius: 4px;
+		border: 1px solid var(--wiki-border-light);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+		transition: transform 0.2s ease;
+		margin: 0 auto;
+	}
+
+	.infobox-custom-image:hover {
+		transform: scale(1.01);
+	}
+
+	/* Responsive styling - stack infobox below medium screens */
+	@media (max-width: 860px) {
+		.wiki-infobox {
+			float: none;
+			width: 100% !important;
+			max-width: 100% !important;
+			min-width: unset;
+			margin: 0 0 24px 0;
+		}
+	}
+</style>

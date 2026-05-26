@@ -1,0 +1,118 @@
+---
+interface Props {
+	domain: string;
+}
+
+const { domain } = Astro.props;
+---
+
+<footer class="wiki-footer">
+	<div class="footer-content">
+
+		
+		<div class="footer-links-badges">
+			<ul class="footer-links">
+				<li><a href="/privacy-policy">Privacy policy</a></li>
+				<li><a href="/about">About Bengal Wiki</a></li>
+				<li><a href="/disclaimers">Disclaimers</a></li>
+				<li><a href="/contact">Contact Bengal Wiki</a></li>
+				<li><a href="/developers">Developers</a></li>
+				<li><a href="/statistics">Statistics</a></li>
+				<li><a href="/cookie-statement">Cookie statement</a></li>
+				<li><a href="/mobile-view">Mobile view</a></li>
+				<li><a href="/sitemap.xml">Sitemap</a></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.wiki-footer {
+		width: 100%;
+		background-color: var(--wiki-bg);
+		border-top: 1px solid var(--wiki-border-light);
+		padding: 32px 32px 48px 32px;
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+	}
+
+	.footer-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	.footer-info {
+		line-height: 1.8;
+	}
+
+	.license-notice {
+		text-align: left;
+		margin-bottom: 0;
+	}
+
+	.footer-links-badges {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		gap: 20px;
+		border-top: 1px solid var(--wiki-border-light);
+		padding-top: 16px;
+	}
+
+	.footer-links {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px 20px;
+	}
+
+	.footer-links a {
+		color: var(--wiki-link);
+		text-decoration: none;
+	}
+
+	.footer-links a:hover {
+		text-decoration: underline;
+	}
+
+	.footer-badges {
+		display: flex;
+		gap: 12px;
+	}
+
+	.badge-link {
+		display: inline-block;
+		height: 30px;
+	}
+
+	.astro-badge {
+		width: 110px;
+		height: 30px;
+	}
+
+	.wiki-badge {
+		width: 100px;
+		height: 30px;
+	}
+
+	@media (max-width: 768px) {
+		.wiki-footer {
+			padding: 24px 16px;
+		}
+
+		.footer-links-badges {
+			flex-direction: column;
+			gap: 20px;
+		}
+
+		.footer-links {
+			gap: 8px 16px;
+		}
+	}
+</style>

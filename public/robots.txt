@@ -1,0 +1,73 @@
+# Bengal Wiki - robots.txt
+# Public encyclopedic content is open for search indexing,
+# AI retrieval, AI grounding, and AI model training.
+
+User-agent: *
+Content-Signal: search=yes,ai-input=yes,ai-train=yes
+Allow: /
+
+# OpenAI / ChatGPT
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic / Claude
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# Google / Gemini
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Google-CloudVertexBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Common Crawl / general AI datasets
+User-agent: CCBot
+Allow: /
+
+# Apple
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Amazon
+User-agent: Amazonbot
+Allow: /
+
+# ByteDance
+User-agent: Bytespider
+Allow: /
+
+# Meta
+User-agent: meta-externalagent
+Allow: /
+
+# Optional internal restrictions
+User-agent: *
+Disallow: /_astro/
+Disallow: /search.json
+
+# Discovery
+Sitemap: https://www.bengal.wiki/sitemap.xml
+LLMs-txt: https://www.bengal.wiki/llms.txt

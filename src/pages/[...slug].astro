@@ -1,0 +1,274 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import InfoBox from '../components/InfoBox.astro';
+
+// Generate static paths for all pages in the content collection
+export async function getStaticPaths() {
+	const allPages = await getCollection('pages');
+	return allPages
+		.filter(page => page.id !== 'index') // Don't match the index page here since we have a dedicated src/pages/index.astro
+		.map(page => ({
+			params: { slug: page.id },
+			props: { page },
+		}));
+}
+
+const { page } = Astro.props;
+const { Content, headings } = await render(page);
+
+// Filter out h1 and select only h2 and h3 for Table of Contents
+const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
+
+// Dynamic domain resolution
+const hostname = Astro.url.hostname || 'bengal.wiki';
+const displayHost = hostname === 'localhost' || hostname === '127.0.0.1' ? 'bengal.wiki' : hostname;
+const domainDisplayName = displayHost.replace(/^www\./i, '');
+
+// Maps category strings to actual active portal directories
+function getCategoryUrl(category: string) {
+	const cat = category.toLowerCase();
+	if (
+		cat.includes('people') || 
+		cat.includes('writer') || 
+		cat.includes('laureate') || 
+		cat.includes('leader') || 
+		cat.includes('reformer') || 
+		cat.includes('pioneer') || 
+		cat.includes('physicist') || 
+		cat.includes('botanist') || 
+		cat.includes('filmmaker') || 
+		cat.includes('philosopher') || 
+		cat.includes('spiritual') || 
+		cat.includes('educator')
+	) {
+		return '/people';
+	}
+	if (
+		cat.includes('places') || 
+		cat.includes('town') || 
+		cat.includes('city') || 
+		cat.includes('station') || 
+		cat.includes('capital') || 
+		cat.includes('temple') || 
+		cat.includes('monument') || 
+		cat.includes('park') || 
+		cat.includes('destination') || 
+		cat.includes('ecoregion')
+	) {
+		return '/places';
+	}
+	if (
+		cat.includes('songs') || 
+		cat.includes('anthem') || 
+		cat.includes('music') || 
+		cat.includes('geeti')
+	) {
+		return '/songs';
+	}
+	return '/';
+}
+
+function cleanHeadingText(text: string): string {
+	return text.replace(/^[0-9]+(?:\.[0-9]+)*[\.\s\-:\)]+\s*/, '');
+}
+---
+
+<Layout title={page.data.title} description={page.data.description} image={page.data.image} facts={page.data.facts}>
+	<div class="article-meta-header">
+		<h1>{page.data.title}</h1>
+		<div class="article-subtitle">From {domainDisplayName}, the free encyclopedia</div>
+	</div>
+
+	<div class="article-layout-container">
+		<!-- Float Wikipedia-style Infobox if facts exist -->
+		{page.data.facts && (
+			<InfoBox 
+				title={page.data.title} 
+				image={page.data.image}
+				image_type={page.data.image_type} 
+				image_caption={page.data.image_caption} 
+				facts={page.data.facts} 
+			/>
+		)}
+
+		<!-- Standard Wikipedia Inline Table of Contents -->
+		{tocHeadings.length >= 3 && (
+			<nav class="toc" aria-label="Table of contents" id="wiki-toc">
+				<div class="toc-title">
+					<span>Contents</span>
+					<button class="toc-toggle-btn" id="toc-toggle" type="button" aria-expanded="true">hide</button>
+				</div>
+				<ul class="toc-list" id="toc-list-ul">
+					{(() => {
+						let h2Index = 0;
+						let h3Index = 0;
+						return tocHeadings.map((heading) => {
+							if (heading.depth === 2) {
+								h2Index++;
+								h3Index = 0;
+								return (
+									<li class="toc-item-h2">
+										<a href={`#${heading.slug}`}>
+											<span class="toc-number">{h2Index}</span>
+											<span class="toc-text">{cleanHeadingText(heading.text)}</span>
+										</a>
+									</li>
+								);
+							} else {
+								h3Index++;
+								return (
+									<li class="toc-item-h3" style="margin-left: 20px;">
+										<a href={`#${heading.slug}`}>
+											<span class="toc-number">{h2Index}.{h3Index}</span>
+											<span class="toc-text">{cleanHeadingText(heading.text)}</span>
+										</a>
+									</li>
+								);
+							}
+						});
+					})()}
+				</ul>
+			</nav>
+		)}
+
+		<!-- Rich Markdown Rendered Body -->
+		<div class="wiki-article-body">
+			<Content />
+		</div>
+	</div>
+
+	<!-- Categories at the bottom (Operational Portal Links) -->
+	{page.data.categories && page.data.categories.length > 0 && (
+		<div class="catlinks" id="catlinks" data-mw="interface">
+			<span class="catlinks-title">Categories</span>:
+			<ul class="catlinks-list">
+				{page.data.categories.map(category => (
+					<li><a href={getCategoryUrl(category)}>{category}</a></li>
+				))}
+			</ul>
+		</div>
+	)}
+</Layout>
+
+<script>
+	// Toggle Table of Contents display logic
+	const toggleBtn = document.getElementById('toc-toggle');
+	const tocList = document.getElementById('toc-list-ul');
+
+	if (toggleBtn && tocList) {
+		toggleBtn.addEventListener('click', () => {
+			const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+			if (isExpanded) {
+				tocList.style.display = 'none';
+				toggleBtn.setAttribute('aria-expanded', 'false');
+				toggleBtn.textContent = 'show';
+			} else {
+				tocList.style.display = 'block';
+				toggleBtn.setAttribute('aria-expanded', 'true');
+				toggleBtn.textContent = 'hide';
+			}
+		});
+	}
+</script>
+
+<style>
+	.article-meta-header {
+		margin-bottom: 20px;
+	}
+
+	.article-meta-header h1 {
+		margin-top: 0;
+		margin-bottom: 4px;
+	}
+
+	.article-subtitle {
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		font-style: italic;
+		margin-bottom: 8px;
+	}
+
+	.article-layout-container {
+		display: flow-root; /* Clear float for infobox */
+		position: relative;
+		overflow: hidden; /* Clip any float overflow beyond container */
+		max-width: 100%;
+	}
+
+	/* Toc toggle button styling */
+	.toc-toggle-btn {
+		background: none;
+		border: none;
+		color: var(--wiki-link);
+		cursor: pointer;
+		font-family: var(--wiki-font-sans);
+		font-size: 11px;
+		padding: 2px 6px;
+		border-radius: 3px;
+	}
+
+	.toc-toggle-btn:hover {
+		background-color: var(--wiki-border-light);
+		color: var(--wiki-link-hover);
+		text-decoration: underline;
+	}
+
+	.toc-list a {
+		color: var(--wiki-link);
+		text-decoration: none;
+	}
+
+	.toc-list a:hover {
+		text-decoration: underline;
+	}
+
+	.toc-item-h2 {
+		font-weight: 500;
+	}
+
+	.toc-item-h3 {
+		font-size: 0.95em;
+	}
+
+	/* Styling overrides for markdown rendered body to fit Wikipedia layout */
+	.wiki-article-body :global(p) {
+		margin-top: 0.5em;
+		margin-bottom: 1em;
+	}
+
+	.wiki-article-body :global(h2) {
+		font-family: var(--wiki-font-serif);
+		font-size: 1.5rem;
+		border-bottom: 1px solid var(--wiki-border-light);
+		padding-bottom: 0.2em;
+		margin-top: 1.6em;
+		margin-bottom: 0.6em;
+		clear: left; /* Keep headings below left floated objects if any */
+	}
+
+	.wiki-article-body :global(h3) {
+		font-family: var(--wiki-font-sans);
+		font-weight: 600;
+		font-size: 1.2rem;
+		margin-top: 1.4em;
+		margin-bottom: 0.4em;
+	}
+
+	.wiki-article-body :global(ul), .wiki-article-body :global(ol) {
+		margin-left: 24px;
+		margin-bottom: 1em;
+	}
+
+	.wiki-article-body :global(li) {
+		margin-bottom: 4px;
+	}
+
+	.wiki-article-body :global(blockquote) {
+		border-left: 4px solid var(--wiki-border);
+		padding-left: 16px;
+		margin: 1.5em 24px;
+		color: var(--wiki-text-muted);
+		font-style: italic;
+	}
+</style>

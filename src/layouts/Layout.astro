@@ -1,0 +1,433 @@
+---
+import WikiHeader from '../components/WikiHeader.astro';
+import WikiFooter from '../components/WikiFooter.astro';
+
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+	ogType?: string;
+	facts?: Record<string, string>;
+	customSchema?: Record<string, any>;
+}
+
+const { 
+	title, 
+	description = "Bengal Wiki, the free encyclopedia of Bengal history, culture, people, and places.",
+	image = "/favicon.svg",
+	ogType = "website",
+	facts = {},
+	customSchema
+} = Astro.props;
+
+// Determine current domain name dynamically
+const hostname = Astro.url.hostname || 'bengal.wiki';
+const displayHost = hostname === 'localhost' || hostname === '127.0.0.1' ? 'bengal.wiki' : hostname;
+const domainDisplayName = displayHost.replace(/^www\./i, '');
+const canonicalUrl = Astro.url.href;
+const socialImageUrl = image.startsWith('http') ? image : `https://${domainDisplayName}${image}`;
+
+// Helper to strip HTML and basic markdown links from strings for clean JSON-LD output
+function cleanText(text: string): string {
+	if (!text) return '';
+	// Strip markdown links: [Label](url) -> Label
+	let cleaned = text.replace(/\[([^\]]+)\]\([^\s)]+\)/g, '$1');
+	// Strip HTML tags
+	cleaned = cleaned.replace(/<\/?[^>]+(>|$)/g, "");
+	return cleaned.trim();
+}
+
+// Generate dynamic JSON-LD Schema
+let jsonLdSchema: Record<string, any> = {};
+
+if (customSchema) {
+	jsonLdSchema = customSchema;
+} else {
+	const pathname = Astro.url.pathname;
+	if (pathname.includes('/people/')) {
+		const orgName = cleanText(facts['Organization'] || facts['Key Roles'] || '');
+		jsonLdSchema = {
+			"@context": "https://schema.org",
+			"@type": "Person",
+			"name": title,
+			"description": description,
+			"url": canonicalUrl,
+			"image": socialImageUrl,
+			"jobTitle": cleanText(facts['Occupation'] || facts['Role'] || ''),
+			"nationality": {
+				"@type": "Country",
+				"name": cleanText(facts['Nationality'] || 'Indian')
+			}
+		};
+		if (orgName) {
+			jsonLdSchema["worksFor"] = {
+				"@type": "Organization",
+				"name": orgName
+			};
+		}
+		const bornPlace = cleanText(facts['Born'] || '');
+		if (bornPlace) {
+			jsonLdSchema["birthPlace"] = {
+				"@type": "Place",
+				"name": bornPlace
+			};
+		}
+	} else if (pathname.includes('/places/')) {
+		jsonLdSchema = {
+			"@context": "https://schema.org",
+			"@type": "Place",
+			"name": title,
+			"description": description,
+			"url": canonicalUrl,
+			"image": socialImageUrl,
+			"address": {
+				"@type": "PostalAddress",
+				"addressLocality": cleanText(facts['Location'] || facts['District'] || facts['Region'] || '')
+			}
+		};
+	} else if (pathname === '/' || pathname === '/index.html') {
+		jsonLdSchema = {
+			"@context": "https://schema.org",
+			"@type": "WebSite",
+			"name": "Bengal Wiki",
+			"alternateName": "Bengal.Wiki",
+			"url": `https://${domainDisplayName}`,
+			"description": description
+		};
+	} else {
+		// Default to Article or WebPage
+		jsonLdSchema = {
+			"@context": "https://schema.org",
+			"@type": "Article",
+			"headline": title,
+			"description": description,
+			"url": canonicalUrl,
+			"image": socialImageUrl,
+			"author": {
+				"@type": "Organization",
+				"name": "Bengal Wiki Contributors"
+			},
+			"publisher": {
+				"@type": "Organization",
+				"name": "Bengal Wiki",
+				"logo": {
+					"@type": "ImageObject",
+					"url": `https://${domainDisplayName}/favicon.svg`
+				}
+			}
+		};
+	}
+}
+
+const serializedSchema = JSON.stringify(jsonLdSchema, null, 2);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		
+		<!-- SEO Meta Tags -->
+		<title>{title} - Bengal Wiki</title>
+		<meta name="description" content={description} />
+		<meta name="keywords" content="Bengal, West Bengal, Bengal Wiki, Bengal History, Bengal Culture, Bengal People, Bengal Places" />
+		<meta name="author" content="Bengal Wiki Contributors" />
+		<meta name="robots" content="index, follow" />
+		<link rel="canonical" href={canonicalUrl} />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:title" content={`${title} - Bengal Wiki`} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={socialImageUrl} />
+		<meta property="og:site_name" content="Bengal Wiki" />
+		<meta property="og:locale" content="en_US" />
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={`${title} - Bengal Wiki`} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={socialImageUrl} />
+		<meta name="twitter:site" content="@BengalWiki" />
+		<meta name="twitter:creator" content="@BengalWiki" />
+
+		<!-- Schema.org JSON-LD structured metadata markup -->
+		<script type="application/ld+json" set:html={serializedSchema}></script>
+
+		<!-- LLM Discoverability (llms.txt spec: https://llmstxt.org) -->
+		<link rel="llms-txt" type="text/plain" href="/llms.txt" title="Bengal Wiki LLM Index" />
+
+		<!-- Premium Web Typography -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<div class="wiki-container">
+			<WikiHeader domain={domainDisplayName} />
+			
+			<main class="wiki-main">
+				<slot />
+			</main>
+			
+			<WikiFooter domain={domainDisplayName} />
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--wiki-bg: #f8f9fa;
+		--wiki-content-bg: #ffffff;
+		--wiki-text: #202122;
+		--wiki-text-muted: #54595d;
+		--wiki-link: #3366cc;
+		--wiki-link-hover: #4477dd;
+		--wiki-link-visited: #5b368c;
+		--wiki-border: #a2a9b1;
+		--wiki-border-light: #eaecf0;
+		--wiki-highlight: #f8f9fa;
+		--wiki-tag-bg: #f1f3f5;
+		
+		/* Fonts */
+		--wiki-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		--wiki-font-serif: 'Lora', 'Georgia', 'Times New Roman', serif;
+		--wiki-font-bengali: 'Noto Serif Bengali', serif;
+	}
+
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+
+	body {
+		font-family: var(--wiki-font-sans);
+		font-size: 14px;
+		line-height: 1.6;
+		color: var(--wiki-text);
+		background-color: var(--wiki-bg);
+		background-image: linear-gradient(180deg, #eaecf0 0px, var(--wiki-bg) 200px);
+		background-repeat: no-repeat;
+		min-height: 100vh;
+	}
+
+	.wiki-container {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+		width: 100%;
+	}
+
+	.wiki-main {
+		flex: 1;
+		width: 100%;
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 24px 32px 48px 32px;
+		background-color: var(--wiki-content-bg);
+		border-left: 1px solid var(--wiki-border-light);
+		border-right: 1px solid var(--wiki-border-light);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+	}
+
+	/* Wikipedia Standard Content Typography Styling */
+	h1, h2, h3, h4, h5, h6 {
+		font-family: var(--wiki-font-serif);
+		font-weight: 400;
+		color: #000000;
+		margin-bottom: 0.5em;
+		line-height: 1.3;
+	}
+
+	h1 {
+		font-size: 1.8rem;
+		border-bottom: 1px solid var(--wiki-border);
+		padding-bottom: 0.2em;
+		margin-top: 0.2em;
+		margin-bottom: 0.4em;
+	}
+
+	h2 {
+		font-size: 1.5rem;
+		border-bottom: 1px solid var(--wiki-border-light);
+		padding-bottom: 0.2em;
+		margin-top: 1.5em;
+		margin-bottom: 0.6em;
+	}
+
+	h3 {
+		font-size: 1.25rem;
+		margin-top: 1.2em;
+		margin-bottom: 0.4em;
+		font-family: var(--wiki-font-sans);
+		font-weight: 600;
+	}
+
+	p {
+		margin-bottom: 1em;
+		text-align: justify;
+	}
+
+	a {
+		color: var(--wiki-link);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	a:hover {
+		color: var(--wiki-link-hover);
+		text-decoration: underline;
+	}
+
+	/* Wikipedia horizontal lines */
+	hr {
+		border: 0;
+		height: 1px;
+		background-color: var(--wiki-border-light);
+		margin: 1.5rem 0;
+	}
+
+	ul, ol {
+		margin-bottom: 1em;
+		margin-left: 2em;
+	}
+
+	li {
+		margin-bottom: 0.25em;
+	}
+
+	/* Custom tables to look like Wikipedia */
+	table.wikitable {
+		background-color: #f8f9fa;
+		border: 1px solid #a2a9b1;
+		border-collapse: collapse;
+		margin: 1em 0;
+		width: 100%;
+	}
+
+	table.wikitable > tr > th,
+	table.wikitable > tr > td,
+	table.wikitable > * > tr > th,
+	table.wikitable > * > tr > td {
+		border: 1px solid #a2a9b1;
+		padding: 0.4em 0.6em;
+	}
+
+	table.wikitable > tr > th,
+	table.wikitable > * > tr > th {
+		background-color: #eaecf0;
+		text-align: left;
+		font-weight: bold;
+	}
+
+	/* Categories Box */
+	.catlinks {
+		border: 1px solid var(--wiki-border-light);
+		background-color: var(--wiki-highlight);
+		padding: 10px 16px;
+		margin-top: 40px;
+		font-size: 0.9em;
+		border-radius: 4px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		align-items: center;
+	}
+
+	.catlinks-title {
+		font-weight: 600;
+		color: var(--wiki-text-muted);
+	}
+
+	.catlinks-list {
+		display: flex;
+		flex-wrap: wrap;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.catlinks-list li {
+		margin: 0;
+		padding: 0;
+		display: flex;
+		align-items: center;
+	}
+
+	.catlinks-list li:not(:last-child)::after {
+		content: "|";
+		margin: 0 8px;
+		color: var(--wiki-border);
+		font-weight: 300;
+	}
+
+	/* Inline contents container (TOC) */
+	.toc {
+		border: 1px solid var(--wiki-border-light);
+		background-color: var(--wiki-highlight);
+		padding: 16px 20px;
+		margin: 1.5em 0;
+		display: inline-block;
+		min-width: 260px;
+		max-width: 100%;
+		border-radius: 4px;
+		font-size: 0.9em;
+	}
+
+	.toc-title {
+		font-weight: 600;
+		text-align: center;
+		margin-bottom: 8px;
+		font-family: var(--wiki-font-sans);
+		font-size: 0.95rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.toc-toggle {
+		font-size: 0.85em;
+		color: var(--wiki-link);
+		cursor: pointer;
+		margin-left: 12px;
+	}
+
+	.toc-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.toc-list li {
+		margin: 4px 0;
+	}
+
+	.toc-number {
+		color: var(--wiki-text-muted);
+		margin-right: 6px;
+		font-size: 0.9em;
+	}
+
+	/* Responsive tweaks */
+	@media (max-width: 768px) {
+		.wiki-main {
+			padding: 16px;
+		}
+		h1 {
+			font-size: 1.6rem;
+		}
+		p {
+			text-align: left;
+		}
+	}
+</style>

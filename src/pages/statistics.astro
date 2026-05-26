@@ -1,0 +1,147 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+
+// Fetch all pages dynamically to calculate actual statistics
+const allPages = await getCollection('pages');
+const people = allPages.filter(p => p.id.startsWith('people/'));
+const places = allPages.filter(p => p.id.startsWith('places/'));
+const songs = allPages.filter(p => p.id.startsWith('songs/'));
+const general = allPages.filter(p => !p.id.includes('/'));
+
+// Active domain name
+const hostname = Astro.url.hostname || 'bengal.wiki';
+const displayHost = hostname === 'localhost' || hostname === '127.0.0.1' ? 'bengal.wiki' : hostname;
+const domainDisplayName = displayHost.replace(/^www\./i, '');
+---
+
+<Layout 
+	title="Special: Statistics" 
+	description="Dynamic statistics page displaying total article counts, database growth, and directory listings for Bengal Wiki."
+>
+	<div class="article-meta-header">
+		<h1>Special: Statistics</h1>
+		<div class="article-subtitle">From {domainDisplayName}, the free encyclopedia</div>
+	</div>
+
+	<p>
+		This page displays real-time automated statistics regarding the database and content pages currently compiled inside <strong>Bengal Wiki</strong>. 
+		There are currently <strong>{allPages.length}</strong> total pages in the database.
+	</p>
+
+	<h2 id="general-stats">General Database Statistics</h2>
+	<table class="wikitable statistics-table">
+		<thead>
+			<tr>
+				<th>Statistic Description</th>
+				<th>Value</th>
+				<th>Status / Details</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td><strong>Total Database Pages</strong></td>
+				<td class="stat-value">{allPages.length}</td>
+				<td>Includes portal directories and utility pages</td>
+			</tr>
+			<tr>
+				<td><strong>Eminent People Profiles</strong></td>
+				<td class="stat-value">{people.length}</td>
+				<td>Biographical articles in <code>/people/*</code></td>
+			</tr>
+			<tr>
+				<td><strong>Prominent Places Articles</strong></td>
+				<td class="stat-value">{places.length}</td>
+				<td>Geographical and architectural articles in <code>/places/*</code></td>
+			</tr>
+			<tr>
+				<td><strong>Legendary Songs & Anthems</strong></td>
+				<td class="stat-value">{songs.length}</td>
+				<td>Lyrics and history pages in <code>/songs/*</code></td>
+			</tr>
+			<tr>
+				<td><strong>General Topic Articles</strong></td>
+				<td class="stat-value">{general.length}</td>
+				<td>Overview articles (e.g., History, Culture, Home Page)</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2 id="page-directory">Full Article Directory</h2>
+	<p>Below is a complete index directory of all compiled pages currently active on the <code>{domainDisplayName}</code> domain:</p>
+	
+	<table class="wikitable directory-table">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Article Title</th>
+				<th>Namespace Path / Slug</th>
+				<th>Primary Category</th>
+			</tr>
+		</thead>
+		<tbody>
+			{allPages.map((page, index) => {
+				let category = 'General';
+				if (page.id.startsWith('people/')) category = 'Eminent Person';
+				else if (page.id.startsWith('places/')) category = 'Prominent Place';
+				else if (page.id.startsWith('songs/')) category = 'Song & Anthem';
+				
+				const url = page.id === 'index' ? '/' : `/${page.id}`;
+				
+				return (
+					<tr>
+						<td>{index + 1}</td>
+						<td><strong><a href={url}>{page.data.title}</a></strong></td>
+						<td><code>{page.id}</code></td>
+						<td><span class={`cat-badge cat-${category.toLowerCase().replace(/\s+/g, '-')}`}>{category}</span></td>
+					</tr>
+				);
+			})}
+		</tbody>
+	</table>
+</Layout>
+
+<style>
+	.statistics-table th, .directory-table th {
+		font-family: var(--wiki-font-sans);
+		font-weight: 600;
+	}
+
+	.stat-value {
+		font-size: 16px;
+		font-weight: bold;
+		color: #b11226;
+		text-align: right;
+		width: 120px;
+	}
+
+	.cat-badge {
+		font-size: 11px;
+		font-weight: 600;
+		padding: 3px 8px;
+		border-radius: 12px;
+		text-transform: uppercase;
+		letter-spacing: 0.3px;
+	}
+
+	.cat-general { background-color: #eaecf0; color: #202122; }
+	.cat-eminent-person { background-color: #f5e3e5; color: #b11226; }
+	.cat-prominent-place { background-color: #eaf2f8; color: #003049; }
+	.cat-song-&-anthem { background-color: #f3e6f0; color: #5c1349; }
+
+	.article-meta-header {
+		margin-bottom: 20px;
+	}
+
+	.article-meta-header h1 {
+		margin-top: 0;
+		margin-bottom: 4px;
+	}
+
+	.article-subtitle {
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		font-style: italic;
+		margin-bottom: 8px;
+	}
+</style>

@@ -1,0 +1,491 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SvgPlaceholder from '../components/SvgPlaceholder.astro';
+
+const allPages = await getCollection('pages');
+const people = allPages
+	.filter(page => page.id.startsWith('people/'))
+	.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const ITEMS_PER_PAGE = 8;
+const totalPages = Math.max(1, Math.ceil(people.length / ITEMS_PER_PAGE));
+---
+
+<Layout
+	title="Eminent People from Bengal"
+	description="Explore biographies of outstanding poets, thinkers, scientists, reformers, and leaders who hail from Bengal."
+>
+	<div class="category-header">
+		<span class="category-tag">PORTAL: BIOGRAPHIES</span>
+		<h1>Eminent People from Bengal</h1>
+		<p class="category-description">
+			Bengal has been the cradle of intellectual rebirth, producing Nobel laureates, visionary reformers,
+			pioneering scientists, and revolutionary fighters. This page lists the eminent personalities whose
+			legacies continue to inspire generation after generation.
+		</p>
+	</div>
+
+	<!-- Results meta bar -->
+	<div class="results-bar" id="results-bar">
+		<span class="results-count" id="results-count"></span>
+	</div>
+
+	<!-- All cards — paginated via JS -->
+	<div class="listings-grid" id="listings-grid">
+		{people.length > 0 ? (
+			people.map((person, index) => {
+				const born  = person.data.facts?.['Born'] || 'Unknown';
+				const known = person.data.facts?.['Known for'] || person.data.description || '';
+				return (
+					<article class="listing-card" data-index={index}>
+						<div class="card-image-box">
+							{person.data.image ? (
+								<img src={person.data.image} alt={person.data.title} class="card-custom-image" loading="lazy" />
+							) : (
+								<SvgPlaceholder type="person" title={person.data.title} height="130px" />
+							)}
+						</div>
+						<div class="card-details">
+							<h2><a href={`/${person.id}`}>{person.data.title}</a></h2>
+							<p class="card-dates"><strong>Born/Life:</strong> <span set:html={born}></span></p>
+							<p class="card-summary">{person.data.description}</p>
+							{known && (
+								<p class="card-highlight"><strong>Known for:</strong> <span set:html={known}></span></p>
+							)}
+							<div class="card-footer-action">
+								<a href={`/${person.id}`} class="read-bio-btn">Read Biography &rarr;</a>
+							</div>
+						</div>
+					</article>
+				);
+			})
+		) : (
+			<p class="no-results">No biographies found. Try adding a markdown file inside <code>src/content/pages/people/</code>.</p>
+		)}
+	</div>
+
+	<!-- Pagination controls -->
+	{totalPages > 1 && (
+		<nav class="pagination" id="pagination" aria-label="Page navigation">
+			<button class="page-btn page-prev" id="btn-prev" aria-label="Previous page" disabled>
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+				Previous
+			</button>
+			<div class="page-numbers" id="page-numbers" role="list"></div>
+			<button class="page-btn page-next" id="btn-next" aria-label="Next page">
+				Next
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+			</button>
+		</nav>
+	)}
+</Layout>
+
+<script define:vars={{ ITEMS_PER_PAGE, totalPages, totalItems: people.length }}>
+(function () {
+	'use strict';
+
+	// ── State ────────────────────────────────────────────────────────────────
+	function getPageFromUrl() {
+		const p = parseInt(new URLSearchParams(window.location.search).get('page') || '1', 10);
+		return isNaN(p) || p < 1 ? 1 : Math.min(p, totalPages);
+	}
+
+	let currentPage = getPageFromUrl();
+
+	// ── Elements ─────────────────────────────────────────────────────────────
+	const cards       = Array.from(document.querySelectorAll('.listing-card[data-index]'));
+	const countEl     = document.getElementById('results-count');
+	const pageNumsEl  = document.getElementById('page-numbers');
+	const btnPrev     = document.getElementById('btn-prev');
+	const btnNext     = document.getElementById('btn-next');
+	const grid        = document.getElementById('listings-grid');
+
+	// ── Render page ──────────────────────────────────────────────────────────
+	function render() {
+		const start = (currentPage - 1) * ITEMS_PER_PAGE;
+		const end   = start + ITEMS_PER_PAGE;
+
+		cards.forEach((card, i) => {
+			const visible = i >= start && i < end;
+			card.style.display = visible ? '' : 'none';
+			card.setAttribute('aria-hidden', String(!visible));
+		});
+
+		// Results count
+		const showing = Math.min(end, totalItems) - start;
+		if (countEl) {
+			countEl.textContent = `Showing ${start + 1}–${Math.min(end, totalItems)} of ${totalItems} biographies`;
+		}
+
+		// Prev / Next buttons
+		if (btnPrev) btnPrev.disabled = currentPage === 1;
+		if (btnNext) btnNext.disabled = currentPage === totalPages;
+
+		// Page number buttons
+		if (pageNumsEl) {
+			pageNumsEl.innerHTML = '';
+			const range = buildRange(currentPage, totalPages);
+			range.forEach(item => {
+				if (item === '…') {
+					const ellipsis = document.createElement('span');
+					ellipsis.className = 'page-ellipsis';
+					ellipsis.textContent = '…';
+					ellipsis.setAttribute('aria-hidden', 'true');
+					pageNumsEl.appendChild(ellipsis);
+				} else {
+					const btn = document.createElement('button');
+					btn.className = 'page-num' + (item === currentPage ? ' active' : '');
+					btn.textContent = String(item);
+					btn.setAttribute('aria-label', `Page ${item}`);
+					if (item === currentPage) btn.setAttribute('aria-current', 'page');
+					btn.addEventListener('click', () => goTo(item));
+					pageNumsEl.appendChild(btn);
+				}
+			});
+		}
+
+		// Scroll grid back to top smoothly on page change
+		if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
+	// Build a smart page range with ellipsis (e.g. 1 … 4 5 6 … 12)
+	function buildRange(current, total) {
+		if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+		const pages = new Set([1, total, current]);
+		if (current > 1) pages.add(current - 1);
+		if (current < total) pages.add(current + 1);
+		const sorted = Array.from(pages).sort((a, b) => a - b);
+		const result = [];
+		let prev = 0;
+		for (const p of sorted) {
+			if (p - prev > 1) result.push('…');
+			result.push(p);
+			prev = p;
+		}
+		return result;
+	}
+
+	// ── Navigation ───────────────────────────────────────────────────────────
+	function goTo(page) {
+		currentPage = Math.max(1, Math.min(page, totalPages));
+		const url = new URL(window.location.href);
+		if (currentPage === 1) {
+			url.searchParams.delete('page');
+		} else {
+			url.searchParams.set('page', String(currentPage));
+		}
+		history.pushState({}, '', url.toString());
+		render();
+	}
+
+	if (btnPrev) btnPrev.addEventListener('click', () => goTo(currentPage - 1));
+	if (btnNext) btnNext.addEventListener('click', () => goTo(currentPage + 1));
+
+	// Handle browser back/forward
+	window.addEventListener('popstate', () => {
+		currentPage = getPageFromUrl();
+		render();
+	});
+
+	// ── Init ─────────────────────────────────────────────────────────────────
+	render();
+})();
+</script>
+
+<style>
+	.category-header {
+		border-bottom: 1px solid var(--wiki-border);
+		padding-bottom: 20px;
+		margin-bottom: 20px;
+	}
+
+	.category-tag {
+		font-size: 11px;
+		font-weight: 700;
+		color: #b11226;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		display: inline-block;
+		margin-bottom: 6px;
+	}
+
+	.category-header h1 {
+		border: none;
+		margin: 0 0 10px 0;
+		padding: 0;
+		font-size: 2.2rem;
+		font-weight: 500;
+	}
+
+	.category-description {
+		font-size: 15px;
+		color: var(--wiki-text-muted);
+		margin-bottom: 0;
+		line-height: 1.6;
+		max-width: 900px;
+	}
+
+	/* Results meta bar */
+	.results-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 18px;
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		min-height: 20px;
+	}
+
+	.results-count {
+		font-style: italic;
+	}
+
+	/* Listing Layout */
+	.listings-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 28px;
+		min-height: 200px;
+	}
+
+	.listing-card {
+		display: flex;
+		min-width: 0;
+		background-color: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border-light);
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.listing-card:hover {
+		border-color: var(--wiki-border);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+	}
+
+	.card-image-box {
+		width: 120px;
+		flex-shrink: 0;
+		border-right: 1px solid var(--wiki-border-light);
+		background-color: var(--wiki-bg);
+		overflow: hidden;
+	}
+
+	.card-custom-image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.2s ease;
+	}
+
+	.listing-card:hover .card-custom-image {
+		transform: scale(1.02);
+	}
+
+	.card-details {
+		flex: 1;
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.card-details h2 {
+		font-family: var(--wiki-font-serif);
+		font-size: 18px;
+		margin: 0 0 6px 0;
+		padding: 0;
+		border: none;
+	}
+
+	.card-details h2 a {
+		color: #000000;
+		text-decoration: none;
+	}
+
+	.card-details h2 a:hover {
+		color: var(--wiki-link-hover);
+		text-decoration: underline;
+	}
+
+	.card-dates {
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		margin-bottom: 8px;
+	}
+
+	.card-summary {
+		font-size: 13px;
+		line-height: 1.5;
+		margin-bottom: 10px;
+		text-align: left;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.card-highlight {
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		margin-bottom: 12px;
+		background-color: var(--wiki-highlight);
+		padding: 6px 8px;
+		border-radius: 4px;
+		border-left: 3px solid #b11226;
+	}
+
+	.card-footer-action {
+		margin-top: auto;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	.read-bio-btn {
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--wiki-link);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+
+	.read-bio-btn:hover {
+		color: var(--wiki-link-hover);
+		text-decoration: underline;
+	}
+
+	.no-results {
+		grid-column: span 2;
+		text-align: center;
+		padding: 40px;
+		color: var(--wiki-text-muted);
+		font-style: italic;
+		border: 1px dashed var(--wiki-border-light);
+		border-radius: 8px;
+	}
+
+	/* ── Pagination ─────────────────────────────────────────────────────── */
+	.pagination {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		margin-top: 40px;
+		padding-top: 24px;
+		border-top: 1px solid var(--wiki-border-light);
+		flex-wrap: wrap;
+	}
+
+	.page-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 7px 14px;
+		font-size: 13px;
+		font-family: var(--wiki-font-sans);
+		font-weight: 500;
+		color: var(--wiki-link);
+		background: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+		white-space: nowrap;
+	}
+
+	.page-btn:hover:not(:disabled) {
+		background: var(--wiki-highlight);
+		border-color: var(--wiki-border);
+		color: var(--wiki-link-hover);
+	}
+
+	.page-btn:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+
+	.page-numbers {
+		display: flex;
+		align-items: center;
+		gap: 3px;
+	}
+
+	.page-num {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 34px;
+		height: 34px;
+		padding: 0 6px;
+		margin: 0;
+		font-size: 13px;
+		font-family: var(--wiki-font-sans);
+		color: var(--wiki-link);
+		background: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border-light);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+		appearance: none;
+		-webkit-appearance: none;
+	}
+
+	.page-num:hover {
+		background: var(--wiki-highlight);
+		border-color: var(--wiki-border-light);
+		color: var(--wiki-link-hover);
+	}
+
+	.page-num.active {
+		background: #b11226;
+		border-color: #8e0e1e;
+		color: #ffffff;
+		font-weight: 600;
+		cursor: default;
+	}
+
+	.page-ellipsis {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 28px;
+		height: 34px;
+		font-size: 13px;
+		color: var(--wiki-text-muted);
+		pointer-events: none;
+		user-select: none;
+	}
+
+	/* Responsive Grid */
+	@media (max-width: 900px) {
+		.listings-grid {
+			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+		.no-results { grid-column: span 1; }
+	}
+
+	@media (max-width: 480px) {
+		.listing-card {
+			flex-direction: column;
+		}
+
+		.card-image-box {
+			width: 100%;
+			height: 140px;
+			border-right: none;
+			border-bottom: 1px solid var(--wiki-border-light);
+		}
+
+		.pagination {
+			gap: 4px;
+		}
+
+		.page-btn {
+			padding: 6px 10px;
+			font-size: 12px;
+		}
+	}
+</style>
