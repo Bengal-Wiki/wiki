@@ -1,0 +1,359 @@
+---
+interface Props {
+	domain: string;
+}
+
+const { domain } = Astro.props;
+---
+
+<div class="wiki-search-box" id="wiki-search">
+	<div class="search-input-wrapper">
+		<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+			<circle cx="11" cy="11" r="8"></circle>
+			<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+		</svg>
+		<input 
+			type="search" 
+			id="search-input" 
+			placeholder={`Search ${domain}...`} 
+			autocomplete="off" 
+			aria-label="Search wiki"
+		/>
+		<button id="clear-search" class="clear-search-btn" type="button" aria-label="Clear search" style="display: none;">
+			&times;
+		</button>
+	</div>
+	
+	<!-- Suggestions dropdown -->
+	<div id="search-suggestions" class="search-suggestions-dropdown" style="display: none;">
+		<ul id="suggestions-list" class="suggestions-list"></ul>
+	</div>
+</div>
+
+<script>
+	interface SearchItem {
+		title: string;
+		slug: string;
+		description?: string;
+	}
+
+	let searchIndex: SearchItem[] = [];
+	let isIndexLoaded = false;
+	let activeIndex = -1;
+
+	const searchBox = document.getElementById('wiki-search');
+	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+	const clearBtn = document.getElementById('clear-search') as HTMLButtonElement;
+	const suggestionsDropdown = document.getElementById('search-suggestions');
+	const suggestionsList = document.getElementById('suggestions-list');
+
+	if (searchInput && suggestionsDropdown && suggestionsList && clearBtn) {
+		// Load search index dynamically on focus
+		searchInput.addEventListener('focus', async () => {
+			if (!isIndexLoaded) {
+				try {
+					const res = await fetch('/search.json');
+					if (res.ok) {
+						searchIndex = await res.json();
+						isIndexLoaded = true;
+					}
+				} catch (err) {
+					console.error("Failed to load Bengal Wiki search index:", err);
+				}
+			}
+			handleSearchInput();
+		});
+
+		// Listen to user input
+		searchInput.addEventListener('input', handleSearchInput);
+
+		// Handle keydown events for autocomplete accessibility
+		searchInput.addEventListener('keydown', (e) => {
+			const items = suggestionsList.querySelectorAll('.suggestion-item');
+			if (!items.length) return;
+
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				activeIndex = (activeIndex + 1) % items.length;
+				highlightActiveItem(items);
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				activeIndex = (activeIndex - 1 + items.length) % items.length;
+				highlightActiveItem(items);
+			} else if (e.key === 'Enter') {
+				if (activeIndex >= 0 && activeIndex < items.length) {
+					e.preventDefault();
+					const activeAnchor = items[activeIndex].querySelector('a') as HTMLAnchorElement;
+					if (activeAnchor) activeAnchor.click();
+				}
+			} else if (e.key === 'Escape') {
+				closeDropdown();
+			}
+		});
+
+		// Clear search action
+		clearBtn.addEventListener('click', () => {
+			searchInput.value = '';
+			searchInput.focus();
+			handleSearchInput();
+		});
+
+		// Close dropdown when clicking outside
+		document.addEventListener('click', (e) => {
+			if (searchBox && !searchBox.contains(e.target as Node)) {
+				closeDropdown();
+			}
+		});
+
+		function handleSearchInput() {
+			const query = searchInput.value.trim().toLowerCase();
+			
+			if (query.length > 0) {
+				clearBtn.style.display = 'block';
+			} else {
+				clearBtn.style.display = 'none';
+			}
+
+			if (!isIndexLoaded || query.length === 0) {
+				closeDropdown();
+				return;
+			}
+
+			// Filter pages matching title or description
+			const matches = searchIndex.filter(item => 
+				item.title.toLowerCase().includes(query) || 
+				(item.description && item.description.toLowerCase().includes(query))
+			).slice(0, 8); // Cap at 8 results
+
+			if (matches.length > 0) {
+				renderSuggestions(matches, query);
+			} else {
+				// Show a "no results" message
+				suggestionsList.innerHTML = `<li class="no-results-item">No results found for "${escapeHtml(query)}"</li>`;
+				suggestionsDropdown.style.display = 'block';
+				activeIndex = -1;
+			}
+		}
+
+		function renderSuggestions(matches: SearchItem[], query: string) {
+			suggestionsList.innerHTML = '';
+			activeIndex = -1;
+
+			matches.forEach((match) => {
+				const li = document.createElement('li');
+				li.className = 'suggestion-item';
+
+				// Highlight matching parts of title
+				const titleHtml = highlightText(match.title, query);
+				const descHtml = match.description ? `<span class="suggestion-desc">${escapeHtml(match.description)}</span>` : '';
+
+				li.innerHTML = `
+					<a href="/${match.slug === 'index' ? '' : match.slug}">
+						<div class="suggestion-info">
+							<span class="suggestion-title">${titleHtml}</span>
+							${descHtml}
+						</div>
+					</a>
+				`;
+				suggestionsList.appendChild(li);
+			});
+
+			suggestionsDropdown.style.display = 'block';
+		}
+
+		function highlightActiveItem(items: NodeListOf<Element>) {
+			items.forEach((item, index) => {
+				if (index === activeIndex) {
+					item.classList.add('active');
+					item.scrollIntoView({ block: 'nearest' });
+				} else {
+					item.classList.remove('active');
+				}
+			});
+		}
+
+		function closeDropdown() {
+			suggestionsDropdown.style.display = 'none';
+			activeIndex = -1;
+		}
+
+		function highlightText(text: string, query: string): string {
+			const index = text.toLowerCase().indexOf(query);
+			if (index >= 0) {
+				const before = text.substring(0, index);
+				const match = text.substring(index, index + query.length);
+				const after = text.substring(index + query.length);
+				return `${escapeHtml(before)}<strong>${escapeHtml(match)}</strong>${escapeHtml(after)}`;
+			}
+			return escapeHtml(text);
+		}
+
+		function escapeHtml(str: string): string {
+			return str
+				.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/"/g, '&quot;')
+				.replace(/'/g, '&#039;');
+		}
+	}
+</script>
+
+<style>
+	.wiki-search-box {
+		position: relative;
+		width: 100%;
+		max-width: 420px;
+	}
+
+	.search-input-wrapper {
+		position: relative;
+		display: flex;
+		align-items: center;
+		width: 100%;
+	}
+
+	.search-icon {
+		position: absolute;
+		left: 12px;
+		width: 16px;
+		height: 16px;
+		color: var(--wiki-text-muted);
+		pointer-events: none;
+	}
+
+	#search-input {
+		width: 100%;
+		padding: 10px 36px 10px 38px;
+		font-family: var(--wiki-font-sans);
+		font-size: 14px;
+		color: var(--wiki-text);
+		background-color: var(--wiki-highlight);
+		border: 1px solid var(--wiki-border);
+		border-radius: 20px;
+		outline: none;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	#search-input:focus {
+		background-color: var(--wiki-content-bg);
+		border-color: var(--wiki-link);
+		box-shadow: 0 0 0 3px rgba(51, 102, 204, 0.15);
+	}
+
+	/* Search input clear button */
+	#search-input::-webkit-search-cancel-button {
+		display: none;
+	}
+
+	.clear-search-btn {
+		position: absolute;
+		right: 12px;
+		background: none;
+		border: none;
+		color: var(--wiki-text-muted);
+		font-size: 18px;
+		font-weight: bold;
+		cursor: pointer;
+		padding: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 18px;
+		height: 18px;
+		border-radius: 50%;
+		transition: background-color 0.15s ease;
+	}
+
+	.clear-search-btn:hover {
+		background-color: var(--wiki-border-light);
+		color: var(--wiki-text);
+	}
+
+	/* Autocomplete Dropdown */
+	.search-suggestions-dropdown {
+		position: absolute;
+		top: calc(100% + 8px);
+		left: 0;
+		right: 0;
+		background-color: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border);
+		border-radius: 8px;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+		z-index: 1000;
+		overflow: hidden;
+		animation: slideDown 0.15s cubic-bezier(0, 0, 0.2, 1);
+	}
+
+	@keyframes slideDown {
+		from {
+			opacity: 0;
+			transform: translateY(-8px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.suggestions-list {
+		list-style: none;
+		margin: 0;
+		padding: 4px 0;
+	}
+
+	.suggestion-item {
+		transition: background-color 0.15s ease;
+	}
+
+	.suggestion-item:not(:last-child) {
+		border-bottom: 1px solid var(--wiki-border-light);
+	}
+
+	.suggestion-item a {
+		display: block;
+		padding: 10px 16px;
+		text-decoration: none;
+		color: var(--wiki-text);
+	}
+
+	.suggestion-item:hover, .suggestion-item.active {
+		background-color: var(--wiki-highlight);
+	}
+
+	.suggestion-item.active a {
+		color: var(--wiki-link);
+	}
+
+	.suggestion-info {
+		display: flex;
+		flex-direction: column;
+		gap: 2px;
+	}
+
+	.suggestion-title {
+		font-weight: 500;
+		font-size: 14px;
+	}
+
+	.suggestion-title :global(strong) {
+		color: var(--wiki-link);
+		font-weight: 700;
+	}
+
+	.suggestion-desc {
+		font-size: 11px;
+		color: var(--wiki-text-muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.no-results-item {
+		padding: 12px 16px;
+		font-size: 13px;
+		color: var(--wiki-text-muted);
+		font-style: italic;
+		text-align: center;
+	}
+</style>

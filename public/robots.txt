@@ -1,0 +1,12 @@
+# Bengal Wiki - robots.txt
+# Allow all web crawlers
+User-agent: *
+Allow: /
+
+# Block crawling of internal API and build artifacts
+Disallow: /_astro/
+Disallow: /search.json
+
+# Sitemap and LLM index locations
+Sitemap: https://bengal.wiki/sitemap.xml
+LLMs-txt: https://bengal.wiki/llms.txt

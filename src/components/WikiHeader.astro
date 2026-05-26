@@ -1,0 +1,387 @@
+---
+import WikiSearch from './WikiSearch.astro';
+
+interface Props {
+	domain: string;
+}
+
+const { domain } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+// Dynamic Git repository mapping for operational View Source / View History links
+const gitBaseUrl = 'https://github.com/Bengal-Wiki/wiki';
+let filePath = 'src/pages/index.astro'; // default fallback
+
+if (currentPath === '/') {
+	filePath = 'src/pages/index.astro';
+} else if (currentPath === '/people' || currentPath === '/people/') {
+	filePath = 'src/pages/people.astro';
+} else if (currentPath === '/places' || currentPath === '/places/') {
+	filePath = 'src/pages/places.astro';
+} else if (currentPath === '/songs' || currentPath === '/songs/') {
+	filePath = 'src/pages/songs.astro';
+} else if (currentPath === '/culture' || currentPath === '/culture/') {
+	filePath = 'src/content/pages/culture.md';
+} else if (currentPath === '/history' || currentPath === '/history/') {
+	filePath = 'src/content/pages/history.md';
+} else if (currentPath === '/about' || currentPath === '/about/') {
+	filePath = 'src/content/pages/about.md';
+} else if (currentPath === '/privacy-policy' || currentPath === '/privacy-policy/') {
+	filePath = 'src/content/pages/privacy-policy.md';
+} else if (currentPath === '/disclaimers' || currentPath === '/disclaimers/') {
+	filePath = 'src/content/pages/disclaimers.md';
+} else if (currentPath === '/contact' || currentPath === '/contact/') {
+	filePath = 'src/content/pages/contact.md';
+} else if (currentPath === '/developers' || currentPath === '/developers/') {
+	filePath = 'src/content/pages/developers.md';
+} else if (currentPath === '/cookie-statement' || currentPath === '/cookie-statement/') {
+	filePath = 'src/content/pages/cookie-statement.md';
+} else if (currentPath === '/mobile-view' || currentPath === '/mobile-view/') {
+	filePath = 'src/content/pages/mobile-view.md';
+} else if (currentPath === '/statistics' || currentPath === '/statistics/') {
+	filePath = 'src/pages/statistics.astro';
+} else {
+	// For dynamic catch-all routes like /people/rabindranath-tagore
+	const cleanSlug = currentPath.replace(/^\/|\/$/g, '');
+	filePath = `src/content/pages/${cleanSlug}.md`;
+}
+
+const editPageUrl = `${gitBaseUrl}/edit/main/${filePath}`;
+const viewHistoryUrl = `${gitBaseUrl}/commits/main/${filePath}`;
+
+// Pages that have a static .md endpoint (all content pages except the portal/listing pages)
+const noMdPages = new Set(['/', '/people', '/people/', '/places', '/places/', '/songs', '/songs/', '/statistics', '/statistics/']);
+const cleanPath = currentPath.replace(/\/$/, '') || '/';
+const mdUrl = noMdPages.has(currentPath) ? null : `${cleanPath}.md`;
+---
+
+<header class="wiki-header">
+	<!-- Top Utility Metanav (Operational Git Platform Bar) -->
+	<div class="wiki-metanav">
+		<div class="metanav-content">
+			<div class="user-links">
+				<a href="https://github.com/Bengal-Wiki/wiki" target="_blank" rel="noopener noreferrer" class="meta-link">GitHub Repository</a>
+				<a href="/developers" class="meta-link">Developer Docs</a>
+				<a href="/contact" class="meta-link accent">Report Issue</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main Navigation Bar -->
+	<div class="header-main">
+		<div class="logo-area">
+			<a href="/" class="logo-link" aria-label="Bengal Wiki Home">
+				<!-- SVG Bengal Wiki Logo - Premium Emblem -->
+				<svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+					<!-- Styled puzzle-sphere globe grid -->
+					<circle cx="30" cy="30" r="28" fill="#f8f9fa" stroke="#a2a9b1" stroke-width="1.5" />
+					<ellipse cx="30" cy="30" rx="28" ry="10" fill="none" stroke="#eaecf0" stroke-width="1" />
+					<ellipse cx="30" cy="30" rx="10" ry="28" fill="none" stroke="#eaecf0" stroke-width="1" />
+					
+					<!-- Globe horizontal grids -->
+					<line x1="2" y1="30" x2="58" y2="30" stroke="#eaecf0" stroke-width="1" />
+					
+					<!-- Inner puzzle shape layers -->
+					<path d="M12,20 C18,10 42,10 48,20 C50,25 45,35 40,40 C35,45 25,45 20,40 C15,35 10,25 12,20 Z" fill="#ffffff" opacity="0.9" stroke="#72777d" stroke-width="1" />
+					
+					<!-- The beautiful golden letter 'ব' (Bengali B) indicating Bengal -->
+					<text x="30" y="38" text-anchor="middle" font-family="'Noto Serif Bengali', 'Georgia', serif" font-size="24" font-weight="bold" fill="#b11226">ব</text>
+					
+					<!-- A tiny accent representing the Royal Bengal Tiger stripes in the background -->
+					<path d="M42,22 Q46,26 42,30" stroke="#fca311" stroke-width="2.5" stroke-linecap="round" fill="none" />
+					<path d="M45,20 Q49,24 45,28" stroke="#000000" stroke-width="1.5" stroke-linecap="round" fill="none" />
+				</svg>
+				<div class="logo-text">
+					<span class="logo-title">BENGAL <span class="accent-wiki">WIKI</span></span>
+					<span class="logo-subtitle">The Free Encyclopedia</span>
+				</div>
+			</a>
+		</div>
+
+		<div class="search-area">
+			<WikiSearch domain={domain} />
+		</div>
+	</div>
+
+	<!-- Wikipedia Navigation Tabs Bar -->
+	<div class="header-navigation-tabs">
+		<div class="tabs-content">
+			<!-- Left-side page tabs (Article/Discussion) -->
+			<div class="tabs-group left-tabs">
+				<a href="/" class={`wiki-tab ${currentPath === '/' ? 'active' : ''}`}>
+					<span>Home Page</span>
+				</a>
+				<a href="/people" class={`wiki-tab ${currentPath.startsWith('/people') ? 'active' : ''}`}>
+					<span>Eminent People</span>
+				</a>
+				<a href="/places" class={`wiki-tab ${currentPath.startsWith('/places') ? 'active' : ''}`}>
+					<span>Prominent Places</span>
+				</a>
+				<a href="/songs" class={`wiki-tab ${currentPath.startsWith('/songs') ? 'active' : ''}`}>
+					<span>Songs</span>
+				</a>
+				<a href="/culture" class={`wiki-tab ${currentPath === '/culture' ? 'active' : ''}`}>
+					<span>Culture</span>
+				</a>
+				<a href="/history" class={`wiki-tab ${currentPath === '/history' ? 'active' : ''}`}>
+					<span>History</span>
+				</a>
+			</div>
+			
+			<!-- Right-side actions tabs (Read/Edit/History/Markdown) -->
+			<div class="tabs-group right-tabs">
+				<a href={currentPath} class="wiki-tab active">
+					<span>Read</span>
+				</a>
+				<a href={editPageUrl} target="_blank" rel="noopener noreferrer" class="wiki-tab">
+					<span>Edit</span>
+				</a>
+				<a href={viewHistoryUrl} target="_blank" rel="noopener noreferrer" class="wiki-tab">
+					<span>View history</span>
+				</a>
+				{mdUrl && (
+					<a href={mdUrl} class="wiki-tab wiki-tab-md" title="View this page as clean Markdown (LLM-friendly)" aria-label="View as Markdown">
+						<svg class="md-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 208 128" aria-hidden="true">
+							<rect width="198" height="118" x="5" y="5" ry="10" stroke-width="10" fill="none" stroke="currentColor"/>
+							<path stroke-width="10" fill="currentColor" d="M30 98V30h20l20 25 20-25h20v68H90V59L70 84 50 59v39zm125 0-30-33h20V30h20v35h20z"/>
+						</svg>
+						<span>Markdown</span>
+					</a>
+				)}
+			</div>
+		</div>
+	</div>
+</header>
+
+<style>
+	.wiki-header {
+		width: 100%;
+		background-color: var(--wiki-content-bg);
+		border-bottom: 1px solid var(--wiki-border);
+		z-index: 100;
+	}
+
+	/* Meta Utilities Bar */
+	.wiki-metanav {
+		background-color: var(--wiki-bg);
+		border-bottom: 1px solid var(--wiki-border-light);
+		padding: 6px 32px;
+		font-size: 11px;
+	}
+
+	.metanav-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 20px;
+	}
+
+	.user-status {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		color: var(--wiki-text-muted);
+	}
+
+	.user-icon {
+		width: 12px;
+		height: 12px;
+	}
+
+	.user-links {
+		display: flex;
+		gap: 12px;
+	}
+
+	.meta-link {
+		color: var(--wiki-link);
+		text-decoration: none;
+	}
+
+	.meta-link:hover {
+		text-decoration: underline;
+	}
+
+	.meta-link.accent {
+		font-weight: 600;
+	}
+
+	/* Main Header Row */
+	.header-main {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 16px 32px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 20px;
+	}
+
+	.logo-area {
+		flex-shrink: 0;
+	}
+
+	.logo-link {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.logo-svg {
+		width: 48px;
+		height: 48px;
+		filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.05));
+		transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+	}
+
+	.logo-link:hover .logo-svg {
+		transform: rotate(5deg) scale(1.05);
+	}
+
+	.logo-text {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.logo-title {
+		font-family: var(--wiki-font-sans);
+		font-weight: 700;
+		font-size: 20px;
+		letter-spacing: 0.5px;
+		color: #202122;
+		line-height: 1.1;
+	}
+
+	.logo-title .accent-wiki {
+		color: #b11226; /* Terracotta Crimson */
+	}
+
+	.logo-subtitle {
+		font-size: 11px;
+		color: var(--wiki-text-muted);
+		letter-spacing: 0.2px;
+		font-style: italic;
+	}
+
+	.search-area {
+		flex: 1;
+		display: flex;
+		justify-content: flex-end;
+	}
+
+	/* Wikipedia-style Tabs Navigation Bar */
+	.header-navigation-tabs {
+		background-color: var(--wiki-content-bg);
+		border-top: 1px solid var(--wiki-border-light);
+	}
+
+	.tabs-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 32px;
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-end;
+	}
+
+	.tabs-group {
+		display: flex;
+		gap: 2px;
+	}
+
+	.wiki-tab {
+		display: block;
+		padding: 8px 14px;
+		font-size: 13px;
+		color: var(--wiki-link);
+		text-decoration: none;
+		border: 1px solid transparent;
+		border-bottom: 0;
+		border-radius: 4px 4px 0 0;
+		margin-bottom: -1px;
+		transition: all 0.15s ease;
+	}
+
+	.wiki-tab:hover {
+		background-color: var(--wiki-highlight);
+		color: var(--wiki-link-hover);
+	}
+
+	.wiki-tab.active {
+		color: var(--wiki-text);
+		background-color: var(--wiki-content-bg);
+		border-color: var(--wiki-border-light);
+		border-top: 2px solid #b11226; /* red terracotta bar for active item */
+		font-weight: 600;
+	}
+	
+	.right-tabs .wiki-tab.active {
+		border-top-color: var(--wiki-border);
+	}
+
+	/* Markdown tab — distinct styling to signal it's a raw data format */
+	.wiki-tab-md {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		color: var(--wiki-text-muted);
+		border-top-color: transparent;
+	}
+
+	.wiki-tab-md:hover {
+		color: #1a7340;
+		background-color: #f0faf4;
+		border-top-color: #1a7340 !important;
+	}
+
+	.md-icon {
+		width: 18px;
+		height: 11px;
+		flex-shrink: 0;
+		opacity: 0.7;
+		transition: opacity 0.15s ease;
+	}
+
+	.wiki-tab-md:hover .md-icon {
+		opacity: 1;
+	}
+
+
+	/* Mobile Responsive */
+	@media (max-width: 768px) {
+		.wiki-metanav {
+			padding: 4px 16px;
+		}
+
+		.header-main {
+			padding: 12px 16px;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 12px;
+		}
+
+		.search-area {
+			width: 100%;
+			justify-content: flex-start;
+		}
+
+		.tabs-content {
+			padding: 0 16px;
+			overflow-x: auto;
+		}
+		
+		.right-tabs {
+			display: none; /* Hide action tabs on mobile to save space */
+		}
+		
+		.wiki-tab {
+			padding: 6px 10px;
+			font-size: 12px;
+			white-space: nowrap;
+		}
+	}
+</style>

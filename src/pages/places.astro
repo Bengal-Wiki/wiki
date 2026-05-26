@@ -1,0 +1,399 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SvgPlaceholder from '../components/SvgPlaceholder.astro';
+
+const allPages = await getCollection('pages');
+const places = allPages
+	.filter(page => page.id.startsWith('places/'))
+	.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const ITEMS_PER_PAGE = 8;
+const totalPages = Math.max(1, Math.ceil(places.length / ITEMS_PER_PAGE));
+---
+
+<Layout
+	title="Prominent Places from Bengal"
+	description="Discover the beautiful geography, historical cities, temples, and natural wonders of Bengal."
+>
+	<div class="category-header">
+		<span class="category-tag">PORTAL: GEOGRAPHY &amp; GEOLOGY</span>
+		<h1>Prominent Places from Bengal</h1>
+		<p class="category-description">
+			Bengal boasts a diverse landscape, ranging from the snow-capped Himalayan peaks of Darjeeling and
+			the dense mangrove delta of the Sundarbans to historical terracotta architecture and vibrant cities.
+			Explore the key destinations that define Bengal's heritage.
+		</p>
+	</div>
+
+	<!-- Results meta bar -->
+	<div class="results-bar" id="results-bar">
+		<span class="results-count" id="results-count"></span>
+	</div>
+
+	<!-- All cards — paginated via JS -->
+	<div class="listings-grid" id="listings-grid">
+		{places.length > 0 ? (
+			places.map((place, index) => {
+				const region    = place.data.facts?.['Region'] || place.data.facts?.['Location'] || 'Bengal';
+				const known     = place.data.facts?.['Known for'] || place.data.description || '';
+				const imageType = place.data.image_type || 'monument';
+				return (
+					<article class="listing-card" data-index={index}>
+						<div class="card-image-box">
+							<SvgPlaceholder type={imageType} title={place.data.title} height="130px" />
+						</div>
+						<div class="card-details">
+							<h2><a href={`/${place.id}`}>{place.data.title}</a></h2>
+							<p class="card-dates"><strong>Region/Location:</strong> <span set:html={region}></span></p>
+							<p class="card-summary">{place.data.description}</p>
+							{known && (
+								<p class="card-highlight"><strong>Known for:</strong> <span set:html={known}></span></p>
+							)}
+							<div class="card-footer-action">
+								<a href={`/${place.id}`} class="read-bio-btn">Explore Place &rarr;</a>
+							</div>
+						</div>
+					</article>
+				);
+			})
+		) : (
+			<p class="no-results">No places found. Try adding a markdown file inside <code>src/content/pages/places/</code>.</p>
+		)}
+	</div>
+
+	<!-- Pagination controls -->
+	{totalPages > 1 && (
+		<nav class="pagination" id="pagination" aria-label="Page navigation">
+			<button class="page-btn page-prev" id="btn-prev" aria-label="Previous page" disabled>
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+				Previous
+			</button>
+			<div class="page-numbers" id="page-numbers" role="list"></div>
+			<button class="page-btn page-next" id="btn-next" aria-label="Next page">
+				Next
+				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+			</button>
+		</nav>
+	)}
+</Layout>
+
+<script define:vars={{ ITEMS_PER_PAGE, totalPages, totalItems: places.length }}>
+(function () {
+	'use strict';
+
+	function getPageFromUrl() {
+		const p = parseInt(new URLSearchParams(window.location.search).get('page') || '1', 10);
+		return isNaN(p) || p < 1 ? 1 : Math.min(p, totalPages);
+	}
+
+	let currentPage = getPageFromUrl();
+
+	const cards      = Array.from(document.querySelectorAll('.listing-card[data-index]'));
+	const countEl    = document.getElementById('results-count');
+	const pageNumsEl = document.getElementById('page-numbers');
+	const btnPrev    = document.getElementById('btn-prev');
+	const btnNext    = document.getElementById('btn-next');
+	const grid       = document.getElementById('listings-grid');
+
+	function render() {
+		const start = (currentPage - 1) * ITEMS_PER_PAGE;
+		const end   = start + ITEMS_PER_PAGE;
+
+		cards.forEach((card, i) => {
+			const visible = i >= start && i < end;
+			card.style.display = visible ? '' : 'none';
+			card.setAttribute('aria-hidden', String(!visible));
+		});
+
+		if (countEl) {
+			countEl.textContent = `Showing ${start + 1}–${Math.min(end, totalItems)} of ${totalItems} places`;
+		}
+
+		if (btnPrev) btnPrev.disabled = currentPage === 1;
+		if (btnNext) btnNext.disabled = currentPage === totalPages;
+
+		if (pageNumsEl) {
+			pageNumsEl.innerHTML = '';
+			buildRange(currentPage, totalPages).forEach(item => {
+				if (item === '…') {
+					const el = document.createElement('span');
+					el.className = 'page-ellipsis';
+					el.textContent = '…';
+					el.setAttribute('aria-hidden', 'true');
+					pageNumsEl.appendChild(el);
+				} else {
+					const btn = document.createElement('button');
+					btn.className = 'page-num' + (item === currentPage ? ' active' : '');
+					btn.textContent = String(item);
+					btn.setAttribute('aria-label', `Page ${item}`);
+					if (item === currentPage) btn.setAttribute('aria-current', 'page');
+					btn.addEventListener('click', () => goTo(item));
+					pageNumsEl.appendChild(btn);
+				}
+			});
+		}
+
+		if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+	}
+
+	function buildRange(current, total) {
+		if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+		const pages = new Set([1, total, current]);
+		if (current > 1) pages.add(current - 1);
+		if (current < total) pages.add(current + 1);
+		const sorted = Array.from(pages).sort((a, b) => a - b);
+		const result = [];
+		let prev = 0;
+		for (const p of sorted) {
+			if (p - prev > 1) result.push('…');
+			result.push(p);
+			prev = p;
+		}
+		return result;
+	}
+
+	function goTo(page) {
+		currentPage = Math.max(1, Math.min(page, totalPages));
+		const url = new URL(window.location.href);
+		if (currentPage === 1) { url.searchParams.delete('page'); }
+		else { url.searchParams.set('page', String(currentPage)); }
+		history.pushState({}, '', url.toString());
+		render();
+	}
+
+	if (btnPrev) btnPrev.addEventListener('click', () => goTo(currentPage - 1));
+	if (btnNext) btnNext.addEventListener('click', () => goTo(currentPage + 1));
+	window.addEventListener('popstate', () => { currentPage = getPageFromUrl(); render(); });
+
+	render();
+})();
+</script>
+
+<style>
+	.category-header {
+		border-bottom: 1px solid var(--wiki-border);
+		padding-bottom: 20px;
+		margin-bottom: 20px;
+	}
+
+	.category-tag {
+		font-size: 11px;
+		font-weight: 700;
+		color: #003049;
+		letter-spacing: 1px;
+		text-transform: uppercase;
+		display: inline-block;
+		margin-bottom: 6px;
+	}
+
+	.category-header h1 {
+		border: none;
+		margin: 0 0 10px 0;
+		padding: 0;
+		font-size: 2.2rem;
+		font-weight: 500;
+	}
+
+	.category-description {
+		font-size: 15px;
+		color: var(--wiki-text-muted);
+		margin-bottom: 0;
+		line-height: 1.6;
+		max-width: 900px;
+	}
+
+	.results-bar {
+		display: flex;
+		align-items: center;
+		margin-bottom: 18px;
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		min-height: 20px;
+	}
+
+	.results-count { font-style: italic; }
+
+	.listings-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 28px;
+		min-height: 200px;
+	}
+
+	.listing-card {
+		display: flex;
+		min-width: 0;
+		background-color: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border-light);
+		border-radius: 8px;
+		overflow: hidden;
+		box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.listing-card:hover {
+		border-color: var(--wiki-border);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+	}
+
+	.card-image-box {
+		width: 120px;
+		flex-shrink: 0;
+		border-right: 1px solid var(--wiki-border-light);
+		background-color: var(--wiki-bg);
+		overflow: hidden;
+	}
+
+	.card-details {
+		flex: 1;
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.card-details h2 {
+		font-family: var(--wiki-font-serif);
+		font-size: 18px;
+		margin: 0 0 6px 0;
+		padding: 0;
+		border: none;
+	}
+
+	.card-details h2 a { color: #000000; text-decoration: none; }
+	.card-details h2 a:hover { color: var(--wiki-link-hover); text-decoration: underline; }
+
+	.card-dates { font-size: 12px; color: var(--wiki-text-muted); margin-bottom: 8px; }
+
+	.card-summary {
+		font-size: 13px;
+		line-height: 1.5;
+		margin-bottom: 10px;
+		text-align: left;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.card-highlight {
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		margin-bottom: 12px;
+		background-color: var(--wiki-highlight);
+		padding: 6px 8px;
+		border-radius: 4px;
+		border-left: 3px solid #003049;
+	}
+
+	.card-footer-action { margin-top: auto; display: flex; justify-content: flex-end; }
+
+	.read-bio-btn {
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--wiki-link);
+		text-decoration: none;
+		transition: color 0.15s ease;
+	}
+	.read-bio-btn:hover { color: var(--wiki-link-hover); text-decoration: underline; }
+
+	.no-results {
+		grid-column: span 2;
+		text-align: center;
+		padding: 40px;
+		color: var(--wiki-text-muted);
+		font-style: italic;
+		border: 1px dashed var(--wiki-border-light);
+		border-radius: 8px;
+	}
+
+	/* ── Pagination ─────────────────────────────────────────────────────── */
+	.pagination {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 6px;
+		margin-top: 40px;
+		padding-top: 24px;
+		border-top: 1px solid var(--wiki-border-light);
+		flex-wrap: wrap;
+	}
+
+	.page-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 5px;
+		padding: 7px 14px;
+		font-size: 13px;
+		font-family: var(--wiki-font-sans);
+		font-weight: 500;
+		color: var(--wiki-link);
+		background: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border);
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+		white-space: nowrap;
+	}
+
+	.page-btn:hover:not(:disabled) {
+		background: var(--wiki-highlight);
+		color: var(--wiki-link-hover);
+	}
+
+	.page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+	.page-numbers { display: flex; align-items: center; gap: 3px; }
+
+	.page-num {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 34px;
+		height: 34px;
+		padding: 0 6px;
+		font-size: 13px;
+		font-family: var(--wiki-font-sans);
+		color: var(--wiki-link);
+		background: none;
+		border: 1px solid transparent;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.15s ease;
+	}
+
+	.page-num:hover { background: var(--wiki-highlight); border-color: var(--wiki-border-light); color: var(--wiki-link-hover); }
+
+	.page-num.active {
+		background: #003049;
+		border-color: #002035;
+		color: #ffffff;
+		font-weight: 600;
+		cursor: default;
+	}
+
+	.page-ellipsis {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 28px;
+		height: 34px;
+		font-size: 13px;
+		color: var(--wiki-text-muted);
+		pointer-events: none;
+		user-select: none;
+	}
+
+	@media (max-width: 900px) {
+		.listings-grid { grid-template-columns: 1fr; gap: 20px; }
+		.no-results { grid-column: span 1; }
+	}
+
+	@media (max-width: 480px) {
+		.listing-card { flex-direction: column; }
+		.card-image-box { width: 100%; height: 140px; border-right: none; border-bottom: 1px solid var(--wiki-border-light); }
+		.pagination { gap: 4px; }
+		.page-btn { padding: 6px 10px; font-size: 12px; }
+	}
+</style>

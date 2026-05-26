@@ -1,0 +1,429 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import SvgPlaceholder from '../components/SvgPlaceholder.astro';
+
+// Fetch all pages to count them
+const allPages = await getCollection('pages');
+const people = allPages.filter(p => p.id.startsWith('people/'));
+const places = allPages.filter(p => p.id.startsWith('places/'));
+const songs = allPages.filter(p => p.id.startsWith('songs/'));
+
+// Fetch featured articles
+const tagore = await getEntry('pages', 'people/rabindranath-tagore');
+const sunderbans = await getEntry('pages', 'places/sunderbans');
+
+// Calculate active domain name
+const hostname = Astro.url.hostname || 'bengal.wiki';
+const displayHost = hostname === 'localhost' || hostname === '127.0.0.1' ? 'bengal.wiki' : hostname;
+const domainDisplayName = displayHost.replace(/^www\./i, '');
+---
+
+<Layout title="Home Page">
+	<div class="welcome-banner">
+		<div class="welcome-text">
+			<h1>Welcome to Bengal Wiki</h1>
+			<p>The premium, free encyclopedia about Bengal that anyone can discover.</p>
+		</div>
+		<div class="welcome-stats">
+			<span class="stats-number">{allPages.length}</span>
+			<span class="stats-label">Articles</span>
+		</div>
+	</div>
+
+	<div class="wiki-grid">
+		<!-- Left Column: Featured Article & Portals -->
+		<div class="wiki-col left-col">
+			<section class="wiki-section-card featured-article">
+				<h2 class="section-title-header">
+					<svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+					</svg>
+					Today's Featured Article
+				</h2>
+				<div class="section-body">
+					{tagore ? (
+						<div class="featured-content">
+							<div class="featured-image">
+								<SvgPlaceholder type="person" title="Rabindranath Tagore" height="150px" />
+							</div>
+							<div class="featured-text">
+								<h3><a href="/people/rabindranath-tagore">{tagore.data.title}</a></h3>
+								<p class="featured-excerpt">
+									{tagore.data.description || "A Nobel laureate poet, writer, songwriter, philosopher, and artist from Bengal. He reshaped Bengali literature and music, as well as Indian art in the late 19th and early 20th centuries."}
+								</p>
+								<p class="read-more-link"><a href="/people/rabindranath-tagore">Full article...</a></p>
+							</div>
+						</div>
+					) : (
+						<p>No featured article selected for today.</p>
+					)}
+				</div>
+			</section>
+
+			<section class="wiki-section-card portals-hub">
+				<h2 class="section-title-header">
+					<svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+						<path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+					</svg>
+					Browse Knowledge Portals
+				</h2>
+				<div class="section-body portals-grid">
+					<div class="portal-item">
+						<div class="portal-badge people-badge">ব</div>
+						<div class="portal-info">
+							<h3><a href="/people">Eminent People</a></h3>
+							<p>Biographies of Bengal's greatest writers, political leaders, scientists, and social reformers. Total {people.length} profiles.</p>
+						</div>
+					</div>
+
+					<div class="portal-item">
+						<div class="portal-badge places-badge">প</div>
+						<div class="portal-info">
+							<h3><a href="/places">Prominent Places</a></h3>
+							<p>Explore Bengal's rich geography: majestic hill stations, historic terracotta sites, rivers, and dense mangrove forests. Total {places.length} articles.</p>
+						</div>
+					</div>
+
+					<div class="portal-item">
+						<div class="portal-badge songs-badge">গ</div>
+						<div class="portal-info">
+							<h3><a href="/songs">Songs & Anthems</a></h3>
+							<p>Discover the lyrics, melodies, and dramatic histories behind Bengal's legendary anthems and folk music. Total {songs.length} entries.</p>
+						</div>
+					</div>
+
+					<div class="portal-item">
+						<div class="portal-badge culture-badge">স</div>
+						<div class="portal-info">
+							<h3><a href="/culture">Art & Culture</a></h3>
+							<p>A dive into Durga Puja celebrations, Rabindra Sangeet, Bengali cinema, classical textiles, and delectable sweet cuisine.</p>
+						</div>
+					</div>
+
+					<div class="portal-item">
+						<div class="portal-badge history-badge">ই</div>
+						<div class="portal-info">
+							<h3><a href="/history">History & Milestones</a></h3>
+							<p>Tracing Bengal from the ancient Gangaridai kingdom and Pala empire to the Bengal Renaissance and partition movements.</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<!-- Right Column: Did You Know, In The News -->
+		<div class="wiki-col right-col">
+			<section class="wiki-section-card did-you-know">
+				<h2 class="section-title-header">
+					<svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<circle cx="12" cy="12" r="10"></circle>
+						<path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+						<line x1="12" y1="17" x2="12.01" y2="17"></line>
+					</svg>
+					Did you know...
+				</h2>
+				<div class="section-body">
+					<ul class="dyk-list">
+						<li>... that the <strong>Sundarbans</strong> mangrove forest is the largest of its kind in the world and serves as a natural fortress protecting Bengal from severe tropical cyclones?</li>
+						<li>... that <strong>Rabindranath Tagore</strong> is the only poet in history to have composed the national anthems of two separate sovereign nations—India and Bangladesh?</li>
+						<li>... that <strong>Bishnupur</strong> is globally renowned for its unique terracotta temples built in the 17th century by Mallabhum kings, constructed entirely from local clay due to the scarcity of stone?</li>
+						<li>... that Darjeeling's famous Himalayan Railway, also known as the <strong>"Toy Train,"</strong> is a UNESCO World Heritage site and was completed in 1881?</li>
+						<li>... that the <strong>Bengal Renaissance</strong> was a cultural, social, intellectual, and artistic movement in the Bengal region during the period of the British Raj, from the late 18th to the early 20th century?</li>
+					</ul>
+				</div>
+			</section>
+
+			<section class="wiki-section-card featured-place">
+				<h2 class="section-title-header">
+					<svg class="title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+						<circle cx="12" cy="10" r="3"></circle>
+					</svg>
+					Prominent Geographical Feature
+				</h2>
+				<div class="section-body">
+					{sunderbans ? (
+						<div class="featured-place-content">
+							<SvgPlaceholder type="nature" title="Sundarbans" height="120px" />
+							<h3 class="place-title"><a href="/places/sunderbans">{sunderbans.data.title}</a></h3>
+							<p>{sunderbans.data.description || "A UNESCO World Heritage Site hosting the Royal Bengal Tigers."}</p>
+							<p class="read-more-link"><a href="/places/sunderbans">Read entry...</a></p>
+						</div>
+					) : (
+						<p>No featured place selected.</p>
+					)}
+				</div>
+			</section>
+		</div>
+	</div>
+</Layout>
+
+<style>
+	/* Welcome Banner Style */
+	.welcome-banner {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: linear-gradient(135deg, #f8f9fa 0%, #eaecf0 100%);
+		border: 1px solid var(--wiki-border);
+		border-left: 5px solid #b11226; /* Terracotta red accent */
+		border-radius: 6px;
+		padding: 24px 32px;
+		margin-bottom: 24px;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.01);
+	}
+
+	.welcome-text h1 {
+		font-family: var(--wiki-font-serif);
+		font-size: 2.2rem;
+		border: none;
+		padding: 0;
+		margin-bottom: 8px;
+		font-weight: 500;
+	}
+
+	.welcome-text p {
+		margin-bottom: 0;
+		font-size: 15px;
+		color: var(--wiki-text-muted);
+	}
+
+	.welcome-stats {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		background-color: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border-light);
+		padding: 12px 20px;
+		border-radius: 6px;
+		min-width: 100px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+	}
+
+	.stats-number {
+		font-size: 28px;
+		font-weight: 700;
+		color: #b11226;
+		line-height: 1;
+	}
+
+	.stats-label {
+		font-size: 11px;
+		color: var(--wiki-text-muted);
+		text-transform: uppercase;
+		font-weight: 600;
+		letter-spacing: 0.5px;
+	}
+
+	/* Wikipedia Section Grids */
+	.wiki-grid {
+		display: grid;
+		grid-template-columns: 1.5fr 1fr;
+		gap: 24px;
+	}
+
+	.wiki-col {
+		display: flex;
+		flex-direction: column;
+		gap: 24px;
+	}
+
+	/* Cards Styling */
+	.wiki-section-card {
+		background-color: var(--wiki-content-bg);
+		border: 1px solid var(--wiki-border-light);
+		border-radius: 6px;
+		overflow: hidden;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+		transition: border-color 0.2s ease;
+	}
+
+	.wiki-section-card:hover {
+		border-color: var(--wiki-border);
+	}
+
+	.section-title-header {
+		font-family: var(--wiki-font-sans);
+		font-weight: 600;
+		font-size: 15px;
+		background-color: #f8f9fa;
+		border-bottom: 1px solid var(--wiki-border-light);
+		padding: 10px 16px;
+		margin: 0;
+		color: #000000;
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.title-icon {
+		width: 16px;
+		height: 16px;
+		color: #b11226;
+	}
+
+	.section-body {
+		padding: 16px;
+	}
+
+	/* Featured Article Styles */
+	.featured-content {
+		display: flex;
+		gap: 20px;
+	}
+
+	.featured-image {
+		width: 130px;
+		flex-shrink: 0;
+	}
+
+	.featured-text {
+		flex: 1;
+	}
+
+	.featured-text h3 {
+		font-family: var(--wiki-font-serif);
+		font-size: 20px;
+		margin-bottom: 10px;
+		margin-top: 0;
+	}
+
+	.featured-excerpt {
+		font-size: 14px;
+		line-height: 1.6;
+		margin-bottom: 12px;
+	}
+
+	.read-more-link {
+		font-weight: 600;
+		margin-bottom: 0;
+	}
+
+	/* Portals Hub Styles */
+	.portals-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 20px;
+	}
+
+	.portal-item {
+		display: flex;
+		gap: 14px;
+		padding: 8px;
+		border-radius: 6px;
+		transition: background-color 0.2s ease;
+	}
+
+	.portal-item:hover {
+		background-color: var(--wiki-highlight);
+	}
+
+	.portal-badge {
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #ffffff;
+		font-family: var(--wiki-font-bengali);
+		font-size: 18px;
+		font-weight: 700;
+		flex-shrink: 0;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	}
+
+	.people-badge { background-color: #b11226; }
+	.places-badge { background-color: #003049; }
+	.songs-badge { background-color: #5c1349; }
+	.culture-badge { background-color: #e76f51; }
+	.history-badge { background-color: #2a9d8f; }
+
+	.portal-info {
+		flex: 1;
+	}
+
+	.portal-info h3 {
+		font-family: var(--wiki-font-sans);
+		font-weight: 600;
+		font-size: 14px;
+		margin: 0 0 4px 0;
+	}
+
+	.portal-info p {
+		font-size: 12px;
+		color: var(--wiki-text-muted);
+		margin: 0;
+		line-height: 1.4;
+		text-align: left;
+	}
+
+	/* Did You Know List */
+	.dyk-list {
+		margin-left: 1.2rem;
+		margin-bottom: 0;
+	}
+
+	.dyk-list li {
+		margin-bottom: 12px;
+		line-height: 1.5;
+	}
+	
+	.dyk-list li:last-child {
+		margin-bottom: 0;
+	}
+
+	/* Featured Place Card */
+	.featured-place-content {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		text-align: center;
+	}
+
+	.place-title {
+		font-family: var(--wiki-font-serif);
+		font-size: 16px;
+		margin: 4px 0 0 0;
+	}
+
+	.featured-place-content p {
+		font-size: 13px;
+		margin: 0;
+		color: var(--wiki-text-muted);
+		line-height: 1.5;
+		text-align: center;
+	}
+
+	/* Mobile Responsive Grid */
+	@media (max-width: 900px) {
+		.wiki-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.welcome-banner {
+			padding: 20px;
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 16px;
+		}
+
+		.welcome-stats {
+			width: 100%;
+			flex-direction: row;
+			justify-content: space-between;
+			padding: 8px 16px;
+		}
+		
+		.stats-number {
+			font-size: 22px;
+		}
+
+		.portals-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
