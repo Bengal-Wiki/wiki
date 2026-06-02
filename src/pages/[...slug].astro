@@ -66,6 +66,27 @@ function getCategoryUrl(category: string) {
 	) {
 		return '/songs';
 	}
+	if (
+		cat.includes('business') || 
+		cat.includes('company') || 
+		cat.includes('enterprise') || 
+		cat.includes('industry') || 
+		cat.includes('brand') || 
+		cat.includes('conglomerate') || 
+		cat.includes('pharmaceutical')
+	) {
+		return '/businesses';
+	}
+	if (
+		cat.includes('book') || 
+		cat.includes('novel') || 
+		cat.includes('poetry') || 
+		cat.includes('anthology') || 
+		cat.includes('literature') || 
+		cat.includes('translation')
+	) {
+		return '/books';
+	}
 	return '/';
 }
 

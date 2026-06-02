@@ -8,6 +8,8 @@ const allPages = await getCollection('pages');
 const people = allPages.filter(p => p.id.startsWith('people/'));
 const places = allPages.filter(p => p.id.startsWith('places/'));
 const songs = allPages.filter(p => p.id.startsWith('songs/'));
+const businesses = allPages.filter(p => p.id.startsWith('businesses/'));
+const books = allPages.filter(p => p.id.startsWith('books/'));
 
 // Fetch featured articles
 const tagore = await getEntry('pages', 'people/rabindranath-tagore');
@@ -91,6 +93,22 @@ const domainDisplayName = displayHost.replace(/^www\./i, '');
 						<div class="portal-info">
 							<h3><a href="/songs">Songs & Anthems</a></h3>
 							<p>Discover the lyrics, melodies, and dramatic histories behind Bengal's legendary anthems and folk music. Total {songs.length} entries.</p>
+						</div>
+					</div>
+
+					<div class="portal-item">
+						<div class="portal-badge businesses-badge">বা</div>
+						<div class="portal-info">
+							<h3><a href="/businesses">Businesses & Brands</a></h3>
+							<p>Industrial pioneers, historical pharmaceutical labs, and contemporary global conglomerates founded in Bengal. Total {businesses.length} articles.</p>
+						</div>
+					</div>
+
+					<div class="portal-item">
+						<div class="portal-badge books-badge">বই</div>
+						<div class="portal-info">
+							<h3><a href="/books">Literature & Books</a></h3>
+							<p>Explore Bengal's rich literary treasury: Nobel-winning poetry collections, historic novels, and legendary anthologies. Total {books.length} works.</p>
 						</div>
 					</div>
 
@@ -339,6 +357,8 @@ const domainDisplayName = displayHost.replace(/^www\./i, '');
 	.people-badge { background-color: #b11226; }
 	.places-badge { background-color: #003049; }
 	.songs-badge { background-color: #5c1349; }
+	.businesses-badge { background-color: #1d3557; }
+	.books-badge { background-color: #5c3d2e; }
 	.culture-badge { background-color: #e76f51; }
 	.history-badge { background-color: #2a9d8f; }
 
