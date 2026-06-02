@@ -11,6 +11,7 @@ facts:
   Education: "M.Physiotherapy in Neurology (NHS)<br>B.Physiotherapy (WBUHS)<br>DNHE (IGNOU)"
   Specialized in: "Neurological & Orthopedic Rehabilitation, Aesthetic Medicine"
   Affiliation: "Indian Association of Physiotherapists (IAP)"
+  Website: "[theraworld.in](https://theraworld.in) | [theraworldskin.com](https://www.theraworldskin.com)"
 categories:
   - "Eminent people from Bengal"
   - "Physiotherapists"
@@ -20,7 +21,7 @@ categories:
 
 **Dr. Manaswita Roy** is an accomplished healthcare professional, medical director, and entrepreneur based in **[Kolkata](/places/kolkata)**, West Bengal. Notably, she has built a prominent career across two specialized medical domains: **Advanced Physiotherapy (Rehabilitation)** and **Medical Cosmetology/Aesthetics**.
 
-She is the **Founder and Medical Director of Thera World**, overseeing its expansion from an elite orthopedic and neurological rehabilitation clinic into an integrated medical aesthetic facility—**[Thera World Skin Clinic](/places/thera-world-skin-clinic)**—located in South Kolkata.
+She is the **Founder and Medical Director of [Thera World](https://theraworld.in/)**, overseeing its expansion from an elite orthopedic and neurological rehabilitation clinic into an integrated medical aesthetic facility—**[Thera World Skin Clinic](/places/thera-world-skin-clinic)**—located in South Kolkata.
 
 ---
 
@@ -82,3 +83,8 @@ Dr. Roy established an outstanding academic profile during her training, graduat
 
 * **Certificate in Orthopaedic Manual Therapy (COMT):** Completed at the renowned *Capri Institute of Manual Therapy, Delhi*.
 * **Certificate Course in Dry Needling:** Certified directly via the *Indian Association of Physiotherapists*.
+
+## External Links
+
+* **Official Website (Thera World):** [theraworld.in](https://theraworld.in)
+* **Official Website (Thera World Skin Clinic):** [theraworldskin.com](https://www.theraworldskin.com)

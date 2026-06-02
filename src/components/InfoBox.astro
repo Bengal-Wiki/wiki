@@ -28,10 +28,11 @@ function processLinks(raw: string): string {
 
 	// 1. Markdown links: [label](url) — handle first so bare-URL pass doesn't double-process
 	result = result.replace(
-		/\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)/g,
+		/\[([^\]]+)\]\(([^)\s]+)\)/g,
 		(_, label, url) => {
 			const isEmail = url.startsWith('mailto:');
-			return `<a href="${url}"${isEmail ? '' : ' target="_blank" rel="noopener noreferrer"'}>${label}</a>`;
+			const isExternal = url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//');
+			return `<a href="${url}"${(isEmail || !isExternal) ? '' : ' target="_blank" rel="noopener noreferrer"'}>${label}</a>`;
 		}
 	);
 
