@@ -62,7 +62,7 @@ Between 2021 and 2022, she was an **ITES Executive** at **iMerit Technology Serv
 
 Ritipriya has participated in several practical training and corporate internship programs:
 * **Pantaloons Aditya Birla Pvt. Ltd.:** Sales & Marketing Trainee.
-* **[Volition Business Solution LLP](/people/pritam-sarkar):** Business Analytics Trainee (where fellow startup founder **[Pritam Sarkar](/people/pritam-sarkar)** was also associated).
+* **Volition Business Solution LLP:** Business Analytics Trainee.
 * **[Think Again Lab](/people/sayandeep-majumdar):** Social Media Marketing Intern and Campus Ambassador (where fellow Bengal tech innovators **[Sayandeep Majumdar](/people/sayandeep-majumdar)** and **[Pritam Sarkar](/people/pritam-sarkar)** have also worked as software engineers and strategy advisors).
 
 ## Technical Skills & Competencies
