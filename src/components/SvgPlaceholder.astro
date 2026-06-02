@@ -1,6 +1,6 @@
 ---
 interface Props {
-	type?: 'person' | 'monument' | 'nature' | 'map' | 'song' | 'generic';
+	type?: 'person' | 'monument' | 'nature' | 'map' | 'song' | 'generic' | 'business' | 'book';
 	title?: string;
 	width?: string;
 	height?: string;
@@ -34,6 +34,14 @@ if (type === 'person') {
 	primaryColor = '#5c1349'; // deep plum
 	secondaryColor = '#f3e6f0';
 	bgColor = '#f3e6f0';
+} else if (type === 'business') {
+	primaryColor = '#1d3557'; // elegant corporate navy
+	secondaryColor = '#457b9d'; // slate blue
+	bgColor = '#f1faee'; // soft mint white
+} else if (type === 'book') {
+	primaryColor = '#5c3d2e'; // leather book brown
+	secondaryColor = '#b85c38'; // amber pages
+	bgColor = '#f4eedb'; // warm book parchment cream
 } else if (type === 'generic') {
 	primaryColor = '#2d3142'; // steel grey
 	secondaryColor = '#bfc0c0';
@@ -189,6 +197,66 @@ if (type === 'person') {
 			<circle cx="100" cy="120" r="55" fill="none" stroke={primaryColor} stroke-width="0.5" opacity="0.1" />
 
 			<text x="100" y="190" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="600" fill={primaryColor} opacity="0.4">IMAGE PLACEHOLDER</text>
+		</svg>
+	)}
+
+	{type === 'business' && (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="svg-placeholder">
+			<rect width="200" height="200" fill={bgColor} rx="8" />
+			<!-- City Skyline Backdrop or Cog -->
+			<circle cx="100" cy="100" r="50" fill={secondaryColor} opacity="0.15" />
+			<!-- Abstract business tower/factory line art -->
+			<path d="M50,160 L50,80 L80,60 L110,80 L110,160 Z" fill={primaryColor} opacity="0.9" />
+			<path d="M110,160 L110,95 L135,80 L160,95 L160,160 Z" fill={primaryColor} opacity="0.7" />
+			<!-- Base Ground -->
+			<rect x="40" y="155" width="130" height="8" fill={primaryColor} rx="2" />
+			<!-- Window details (representing commerce/growth) -->
+			<rect x="62" y="90" width="8" height="12" fill={bgColor} opacity="0.8" />
+			<rect x="78" y="90" width="8" height="12" fill={bgColor} opacity="0.8" />
+			<rect x="62" y="112" width="8" height="12" fill={bgColor} opacity="0.8" />
+			<rect x="78" y="112" width="8" height="12" fill={bgColor} opacity="0.8" />
+			<rect x="62" y="134" width="8" height="12" fill={bgColor} opacity="0.8" />
+			<rect x="78" y="134" width="8" height="12" fill={bgColor} opacity="0.8" />
+			
+			<rect x="122" y="105" width="6" height="10" fill={bgColor} opacity="0.7" />
+			<rect x="136" y="105" width="6" height="10" fill={bgColor} opacity="0.7" />
+			<rect x="122" y="123" width="6" height="10" fill={bgColor} opacity="0.7" />
+			<rect x="136" y="123" width="6" height="10" fill={bgColor} opacity="0.7" />
+			
+			<!-- Dynamic Arrow pointing up and right (Growth) -->
+			<path d="M125,55 L145,55 L145,75" stroke={secondaryColor} stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+			<line x1="85" y1="110" x2="142" y2="57" stroke={secondaryColor} stroke-width="3" stroke-linecap="round" />
+			
+			<text x="100" y="185" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="600" fill={primaryColor} opacity="0.4">BUSINESS PLACEHOLDER</text>
+		</svg>
+	)}
+
+	{type === 'book' && (
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="svg-placeholder">
+			<rect width="200" height="200" fill={bgColor} rx="8" />
+			<!-- Circular aura behind the book -->
+			<circle cx="100" cy="90" r="55" fill={secondaryColor} opacity="0.25" />
+			
+			<!-- Book Spine & Cover backing -->
+			<path d="M100,140 C80,130 50,132 40,138 L40,68 C50,62 80,60 100,70 C120,60 150,62 160,68 L160,138 C150,132 120,130 100,140 Z" fill={primaryColor} />
+			<!-- Inner Pages (Offset slightly for cover borders) -->
+			<path d="M100,136 C82,126 53,128 44,134 L44,66 C53,60 82,58 100,68 C118,58 147,60 156,66 L156,134 C147,128 118,126 100,136 Z" fill="#ffffff" />
+			
+			<!-- Book page lines (Representing text content) -->
+			<path d="M52,78 Q72,71 90,75 M52,90 Q72,83 90,87 M52,102 Q72,95 90,99 M52,114 Q72,107 90,111" stroke={secondaryColor} stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6" />
+			<path d="M148,78 Q128,71 110,75 M148,90 Q128,83 110,87 M148,102 Q128,95 110,99 M148,114 Q128,107 110,111" stroke={secondaryColor} stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.6" />
+			
+			<!-- Classical Inkwell & Quill pen overlay -->
+			<!-- Quill body -->
+			<path d="M130,120 Q145,75 165,45" stroke={primaryColor} stroke-width="2.5" fill="none" stroke-linecap="round" />
+			<!-- Quill feather details -->
+			<path d="M152,65 Q144,70 148,78 M157,55 Q147,61 152,70 M162,48 Q152,53 156,62" stroke={primaryColor} stroke-width="1.5" fill="none" opacity="0.7" />
+			
+			<!-- Small birds/stars of inspiration floating -->
+			<path d="M72,36 Q75,32 78,36 Q81,32 84,36" stroke={primaryColor} stroke-width="1" fill="none" opacity="0.5" />
+			<path d="M112,42 Q115,38 118,42 Q121,38 124,42" stroke={primaryColor} stroke-width="1" fill="none" opacity="0.5" />
+			
+			<text x="100" y="185" text-anchor="middle" font-family="sans-serif" font-size="8" font-weight="600" fill={primaryColor} opacity="0.4">LITERATURE PLACEHOLDER</text>
 		</svg>
 	)}
 

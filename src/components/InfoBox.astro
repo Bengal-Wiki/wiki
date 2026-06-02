@@ -4,12 +4,13 @@ import SvgPlaceholder from './SvgPlaceholder.astro';
 interface Props {
 	title: string;
 	image?: string;
-	image_type?: 'person' | 'monument' | 'nature' | 'map' | 'song' | 'generic';
+	image_type?: 'person' | 'monument' | 'nature' | 'map' | 'song' | 'generic' | 'business' | 'book';
 	image_caption?: string;
 	facts?: Record<string, string>;
+	entity_type?: 'company' | 'restaurant' | 'author' | 'doctor' | 'singer' | 'book' | 'song' | 'place' | 'person' | 'generic';
 }
 
-const { title, image, image_type = 'generic', image_caption, facts = {} } = Astro.props;
+const { title, image, image_type = 'generic', image_caption, facts = {}, entity_type } = Astro.props;
 const factEntries = Object.entries(facts);
 
 /**
@@ -52,7 +53,7 @@ function processLinks(raw: string): string {
 }
 ---
 
-<aside class="wiki-infobox" aria-label={`Quick facts about ${title}`}>
+<aside class={`wiki-infobox ${entity_type ? 'entity-' + entity_type : ''}`} aria-label={`Quick facts about ${title}`}>
 	<div class="infobox-header">
 		<h2 class="infobox-title">{title}</h2>
 	</div>

@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import InfoBox from '../components/InfoBox.astro';
+import WikiSlider from '../components/WikiSlider.astro';
 
 // Generate static paths for all pages in the content collection
 export async function getStaticPaths() {
@@ -31,6 +32,8 @@ function getCategoryUrl(category: string) {
 	if (
 		cat.includes('people') || 
 		cat.includes('writer') || 
+		cat.includes('author') ||
+		cat.includes('novelist') ||
 		cat.includes('laureate') || 
 		cat.includes('leader') || 
 		cat.includes('reformer') || 
@@ -40,7 +43,13 @@ function getCategoryUrl(category: string) {
 		cat.includes('filmmaker') || 
 		cat.includes('philosopher') || 
 		cat.includes('spiritual') || 
-		cat.includes('educator')
+		cat.includes('educator') ||
+		cat.includes('doctor') ||
+		cat.includes('physician') ||
+		cat.includes('medical') ||
+		cat.includes('singer') ||
+		cat.includes('musician') ||
+		cat.includes('artist')
 	) {
 		return '/people';
 	}
@@ -66,6 +75,30 @@ function getCategoryUrl(category: string) {
 	) {
 		return '/songs';
 	}
+	if (
+		cat.includes('business') || 
+		cat.includes('company') || 
+		cat.includes('enterprise') || 
+		cat.includes('industry') || 
+		cat.includes('brand') || 
+		cat.includes('conglomerate') || 
+		cat.includes('pharmaceutical') ||
+		cat.includes('restaurant') ||
+		cat.includes('cuisine') ||
+		cat.includes('food')
+	) {
+		return '/businesses';
+	}
+	if (
+		cat.includes('book') || 
+		cat.includes('novel') || 
+		cat.includes('poetry') || 
+		cat.includes('anthology') || 
+		cat.includes('literature') || 
+		cat.includes('translation')
+	) {
+		return '/books';
+	}
 	return '/';
 }
 
@@ -80,7 +113,7 @@ function cleanHeadingText(text: string): string {
 		<div class="article-subtitle">From {domainDisplayName}, the free encyclopedia</div>
 	</div>
 
-	<div class="article-layout-container">
+	<div class={`article-layout-container ${page.data.entity_type ? 'entity-' + page.data.entity_type : ''}`}>
 		<!-- Float Wikipedia-style Infobox if facts exist -->
 		{page.data.facts && (
 			<InfoBox 
@@ -89,6 +122,7 @@ function cleanHeadingText(text: string): string {
 				image_type={page.data.image_type} 
 				image_caption={page.data.image_caption} 
 				facts={page.data.facts} 
+				entity_type={page.data.entity_type}
 			/>
 		)}
 
@@ -134,6 +168,9 @@ function cleanHeadingText(text: string): string {
 
 		<!-- Rich Markdown Rendered Body -->
 		<div class="wiki-article-body">
+			{page.data.gallery && page.data.gallery.length > 0 && (
+				<WikiSlider gallery={page.data.gallery} title={page.data.title} />
+			)}
 			<Content />
 		</div>
 	</div>
@@ -270,5 +307,93 @@ function cleanHeadingText(text: string): string {
 		margin: 1.5em 24px;
 		color: var(--wiki-text-muted);
 		font-style: italic;
+	}
+
+	/* ── Entity Custom Theme Layout Styles ── */
+	
+	/* Company Theme */
+	.entity-company :global(.wiki-infobox) {
+		border-color: #457b9d;
+		border-top: 4px solid #1d3557;
+	}
+	.entity-company :global(.infobox-title) {
+		color: #1d3557;
+	}
+	.entity-company :global(.infobox-header) {
+		background-color: rgba(29, 53, 87, 0.05);
+	}
+	.entity-company :global(.wiki-article-body blockquote) {
+		border-left-color: #1d3557;
+	}
+	
+	/* Restaurant Theme */
+	.entity-restaurant :global(.wiki-infobox) {
+		border-color: #f77f00;
+		border-top: 4px solid #d62828;
+	}
+	.entity-restaurant :global(.infobox-title) {
+		color: #d62828;
+	}
+	.entity-restaurant :global(.infobox-header) {
+		background-color: rgba(214, 40, 40, 0.05);
+	}
+	.entity-restaurant :global(.wiki-article-body blockquote) {
+		border-left-color: #d62828;
+		background: rgba(247, 127, 0, 0.04);
+		padding: 12px 16px;
+		border-radius: 0 8px 8px 0;
+	}
+
+	/* Author Theme */
+	.entity-author :global(.wiki-infobox) {
+		border-color: #8c7040;
+		border-top: 4px solid #2c5d3b;
+	}
+	.entity-author :global(.infobox-title) {
+		color: #2c5d3b;
+	}
+	.entity-author :global(.infobox-header) {
+		background-color: rgba(44, 93, 59, 0.05);
+	}
+	.entity-author :global(.wiki-article-body) {
+		font-family: var(--wiki-font-serif);
+		font-size: 15.5px;
+	}
+	.entity-author :global(.wiki-article-body blockquote) {
+		border-left-color: #8c7040;
+		font-family: var(--wiki-font-serif);
+		font-size: 1.1rem;
+		background: rgba(140, 112, 64, 0.04);
+		padding: 16px 20px;
+	}
+
+	/* Doctor Theme */
+	.entity-doctor :global(.wiki-infobox) {
+		border-color: #83c5be;
+		border-top: 4px solid #006d77;
+	}
+	.entity-doctor :global(.infobox-title) {
+		color: #006d77;
+	}
+	.entity-doctor :global(.infobox-header) {
+		background-color: rgba(0, 109, 119, 0.05);
+	}
+	.entity-doctor :global(.wiki-article-body blockquote) {
+		border-left-color: #006d77;
+	}
+
+	/* Singer Theme */
+	.entity-singer :global(.wiki-infobox) {
+		border-color: #b5179e;
+		border-top: 4px solid #7209b7;
+	}
+	.entity-singer :global(.infobox-title) {
+		color: #7209b7;
+	}
+	.entity-singer :global(.infobox-header) {
+		background-color: rgba(114, 9, 183, 0.05);
+	}
+	.entity-singer :global(.wiki-article-body blockquote) {
+		border-left-color: #7209b7;
 	}
 </style>
