@@ -86,7 +86,7 @@ Assistant Professor at Asansol Engineering College with over 20 years of teachin
 Associate Professor at Asansol Engineering College. He is a Ph.D. holder in Computer Science & Engineering from MAKAUT and has over 15 years of academic and research experience. Dr. Debnath is an IETE Fellow, an IEEE member, and has published 20 SCI-indexed journal papers in fields like Quantum Dot Cellular Automata, Cryptography, and Computer Networks.
 
 ### Dr. Chayan Paul
-An academic, professor, and researcher associated with Asansol Engineering College, specializing in programming paradigms, compiler design, and software engineering.
+Dr. Chayan Paul is working as Associate Professor in Swami Vivekananda University, Barrackpore. He completed his PhD from Assan University. His current research interests include Data Science, Machine Learning, Deep Learning, Natural Language Processing. He has more than 12 years of teaching experience and has more than 15 research papers published in national and international journals. He also published a good number of papers in national and international conferences.
 
 ### Dr. Nandan Banerji
 An academic faculty member and researcher with extensive experience teaching computer science, algorithm analysis, and database management systems.
