@@ -16,6 +16,12 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Generate Database Inventory
+        run: python3 scripts/generate-inventory.py
       - name: Install, build, and upload your site
         uses: withastro/action@v6
         with:
