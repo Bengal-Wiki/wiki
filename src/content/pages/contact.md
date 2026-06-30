@@ -19,13 +19,9 @@ If you spot a factual error, historical inaccuracy, typos, or broken link inside
 If you experience website display errors, search autocomplete issues, or responsive layout failures:
 * You can submit a technical ticket on our [GitHub issue tracker](https://github.com/Bengal-Wiki/wiki/issues).
 * Please state your browser, operating system, and the specific URL where the layout anomaly occurred.
-* Email our development team at: `dev@bengal.wiki`
+* Contact our [`development team`](https://github.com/Bengal-Wiki/wiki/issues/new)
 
 ## 3. General & Legal Inquiries
 
 For partnership proposals, general foundation questions, trademark issues, or copyright claims (e.g. DMCA notices):
-* Please email: `contact@bengal.wiki`
-* Our corporate non-profit address:
-  > **Bengal Wiki Foundation**  
-  > Cultural Knowledge Preservation Hub  
-  > Kolkata, West Bengal, India
+* Please post an [`issue`](https://github.com/Bengal-Wiki/wiki/issues/new)
