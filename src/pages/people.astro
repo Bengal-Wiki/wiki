@@ -439,7 +439,7 @@ const totalPages = Math.max(1, Math.ceil(people.length / ITEMS_PER_PAGE));
 		gap: 3px;
 	}
 
-	.page-num {
+	:global(.page-num) {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -457,15 +457,16 @@ const totalPages = Math.max(1, Math.ceil(people.length / ITEMS_PER_PAGE));
 		transition: all 0.15s ease;
 		appearance: none;
 		-webkit-appearance: none;
+		box-sizing: border-box;
 	}
 
-	.page-num:hover {
+	:global(.page-num:hover) {
 		background: var(--wiki-highlight);
 		border-color: var(--wiki-border-light);
 		color: var(--wiki-link-hover);
 	}
 
-	.page-num.active {
+	:global(.page-num.active) {
 		background: #b11226;
 		border-color: #8e0e1e;
 		color: #ffffff;
@@ -473,7 +474,7 @@ const totalPages = Math.max(1, Math.ceil(people.length / ITEMS_PER_PAGE));
 		cursor: default;
 	}
 
-	.page-ellipsis {
+	:global(.page-ellipsis) {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;

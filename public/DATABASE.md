@@ -2,14 +2,14 @@
 
 This file is an automatically generated inventory of all local Markdown corpus pages managed within `src/content/pages/`.
 
-**Total Pages Indexed:** 661
+**Total Pages Indexed:** 662
 
 ## Portals & Directories
 
 - [BOOKS](#books) (4 pages)
 - [BUSINESSES](#businesses) (3 pages)
 - [PEOPLE](#people) (23 pages)
-- [PLACES](#places) (615 pages)
+- [PLACES](#places) (616 pages)
 - [RESTAURANTS](#restaurants) (1 pages)
 - [ROOT](#root) (10 pages)
 - [SONGS](#songs) (5 pages)
@@ -338,6 +338,7 @@ This file is an automatically generated inventory of all local Markdown corpus p
 | **[Kalipada Ghosh Tarai Mahavidyalaya](./src/content/pages/places/kalipada-ghosh-tarai-mahavidyalaya.md)** | `kalipada-ghosh-tarai-mahavidyalaya.md` | `Colleges in West Bengal`, `Educational Institutions in Bengal` | Information about Kalipada Ghosh Tarai Mahavidyalaya, a college / affiliated institution located in University of North Bengal / North Bengal region, West Bengal. |
 | **[Kaliyaganj College](./src/content/pages/places/kaliyaganj-college.md)** | `kaliyaganj-college.md` | `Colleges in West Bengal`, `Educational Institutions in Bengal` | Information about Kaliyaganj College, a college / affiliated institution located in University of Gour Banga / Malda-Dakshin Dinajpur-Uttar Dinajpur region, West Bengal. |
 | **[Kalyani Mahavidyalaya](./src/content/pages/places/kalyani-mahavidyalaya.md)** | `kalyani-mahavidyalaya.md` | `Colleges in West Bengal`, `Educational Institutions in Bengal` | Information about Kalyani Mahavidyalaya, a college / affiliated institution located in University of Kalyani / Nadia-Murshidabad region, West Bengal. |
+| **[Kalyani University](./src/content/pages/places/kalyani-university.md)** | `kalyani-university.md` | `Universities and Institutes in West Bengal`, `Educational Institutions in Bengal` | Information about Kalyani University, a university / national institute / specialised institution located in Institutes of National Importance / Central / Deemed / State universities and specialised institutions, West Bengal. |
 | **[Kanchrapara College](./src/content/pages/places/kanchrapara-college.md)** | `kanchrapara-college.md` | `Colleges in West Bengal`, `Educational Institutions in Bengal` | Information about Kanchrapara College, a college / affiliated institution located in University of Kalyani / Nadia-Murshidabad region, West Bengal. |
 | **[Kandi Raj College](./src/content/pages/places/kandi-raj-college.md)** | `kandi-raj-college.md` | `Colleges in West Bengal`, `Educational Institutions in Bengal` | Information about Kandi Raj College, a college / affiliated institution located in University of Kalyani / Nadia-Murshidabad region, West Bengal. |
 | **[Kanyashree College](./src/content/pages/places/kanyashree-college.md)** | `kanyashree-college.md` | `Colleges in Kolkata`, `Educational Institutions in Bengal` | Information about Kanyashree College, a college / affiliated institution located in Kolkata, West Bengal. |
