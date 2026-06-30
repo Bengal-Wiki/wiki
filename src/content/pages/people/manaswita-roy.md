@@ -1,8 +1,16 @@
 ---
 title: "Dr. Manaswita Roy"
 description: "Kolkata-based healthcare professional, medical director of Thera World, university gold-medalist neurological physiotherapist, and clinical cosmetologist."
+image: "/images/manaswita-roy-1.png"
 image_type: "person"
 image_caption: "Dr. Manaswita Roy, Chief Consultant and founder of Thera World."
+gallery:
+  - image: "/images/manaswita-roy-1.png"
+    caption: "Dr. Manaswita Roy at Thera World Skin Clinic"
+  - image: "/images/manaswita-roy-2.jpg"
+    caption: "Dr. Manaswita Roy, Chief Clinical Advisor"
+  - image: "/images/manaswita-roy-3.jpg"
+    caption: "Dr. Manaswita Roy at her office consult desk"
 facts:
   Born: "West Bengal, India"
   Nationality: "Indian"
