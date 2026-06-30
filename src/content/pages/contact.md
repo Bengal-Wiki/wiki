@@ -12,7 +12,7 @@ Thank you for your interest in **Bengal Wiki**. We value your feedback, suggesti
 If you spot a factual error, historical inaccuracy, typos, or broken link inside any of our articles (e.g. under people, places, or songs):
 * You can suggest edits directly by raising an issue on our [GitHub repository](https://github.com/Bengal-Wiki/wiki).
 * Please provide credible citations (book references, primary historical files, or academic journals) to support your requested correction.
-* You can email our editorial board at: `editorial@bengal.wiki`
+* Contact our [`editorial team`](https://github.com/Bengal-Wiki/wiki/issues/new)
 
 ## 2. Technical Support
 
