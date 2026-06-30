@@ -11,9 +11,20 @@ const songs = allPages.filter(p => p.id.startsWith('songs/'));
 const businesses = allPages.filter(p => p.id.startsWith('businesses/'));
 const books = allPages.filter(p => p.id.startsWith('books/'));
 
-// Fetch featured articles
-const tagore = await getEntry('pages', 'people/rabindranath-tagore');
-const sunderbans = await getEntry('pages', 'places/sunderbans');
+// Filter out top-level files (like index, history, culture, developers) to showcase content pages (people, places, songs, businesses, books)
+const articles = allPages.filter(p => p.id !== 'index' && p.id.includes('/'));
+
+// Deterministic rotation based on the day of the year
+const today = new Date();
+const epoch = new Date(2026, 0, 1);
+const diffTime = Math.abs(today.getTime() - epoch.getTime());
+const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+// Pick a featured article based on the daily seed
+const featuredArticle = articles.length > 0 ? articles[diffDays % articles.length] : null;
+
+// Pick a featured place based on the daily seed
+const featuredPlace = places.length > 0 ? places[diffDays % places.length] : null;
 
 // Calculate active domain name
 const hostname = Astro.url.hostname || 'bengal.wiki';
@@ -44,17 +55,17 @@ const domainDisplayName = displayHost.replace(/^www\./i, '');
 					Today's Featured Article
 				</h2>
 				<div class="section-body">
-					{tagore ? (
+					{featuredArticle ? (
 						<div class="featured-content">
 							<div class="featured-image">
-								<SvgPlaceholder type="person" title="Rabindranath Tagore" height="150px" />
+								<SvgPlaceholder type={featuredArticle.data.image_type || 'generic'} title={featuredArticle.data.title} height="150px" />
 							</div>
 							<div class="featured-text">
-								<h3><a href="/people/rabindranath-tagore">{tagore.data.title}</a></h3>
+								<h3><a href={`/${featuredArticle.id}`}>{featuredArticle.data.title}</a></h3>
 								<p class="featured-excerpt">
-									{tagore.data.description || "A Nobel laureate poet, writer, songwriter, philosopher, and artist from Bengal. He reshaped Bengali literature and music, as well as Indian art in the late 19th and early 20th centuries."}
+									{featuredArticle.data.description}
 								</p>
-								<p class="read-more-link"><a href="/people/rabindranath-tagore">Full article...</a></p>
+								<p class="read-more-link"><a href={`/${featuredArticle.id}`}>Full article...</a></p>
 							</div>
 						</div>
 					) : (
@@ -162,12 +173,12 @@ const domainDisplayName = displayHost.replace(/^www\./i, '');
 					Prominent Geographical Feature
 				</h2>
 				<div class="section-body">
-					{sunderbans ? (
+					{featuredPlace ? (
 						<div class="featured-place-content">
-							<SvgPlaceholder type="nature" title="Sundarbans" height="120px" />
-							<h3 class="place-title"><a href="/places/sunderbans">{sunderbans.data.title}</a></h3>
-							<p>{sunderbans.data.description || "A UNESCO World Heritage Site hosting the Royal Bengal Tigers."}</p>
-							<p class="read-more-link"><a href="/places/sunderbans">Read entry...</a></p>
+							<SvgPlaceholder type={featuredPlace.data.image_type || 'nature'} title={featuredPlace.data.title} height="120px" />
+							<h3 class="place-title"><a href={`/${featuredPlace.id}`}>{featuredPlace.data.title}</a></h3>
+							<p>{featuredPlace.data.description || "A geographical landmark from Bengal."}</p>
+							<p class="read-more-link"><a href={`/${featuredPlace.id}`}>Read entry...</a></p>
 						</div>
 					) : (
 						<p>No featured place selected.</p>
