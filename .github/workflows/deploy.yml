@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
+  # Run daily at 12:00 PM IST (6:30 AM UTC) to rotate featured articles and update files
+  schedule:
+    - cron: '30 6 * * *'
 
 # Allow this job to clone the repo and create a page deployment
 permissions:
