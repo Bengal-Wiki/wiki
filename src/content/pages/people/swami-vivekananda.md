@@ -26,7 +26,7 @@ He is best known for his historic speech at the **Parliament of the World's Reli
 
 Narendranath Datta was born into an affluent Kayastha family in Calcutta. His father, Vishwanath Datta, was an attorney at the Calcutta High Court, and his mother, Bhuvaneshwari Devi, was a deeply religious woman.
 
-Narendranath was highly intelligent, studying Western philosophy, logic, and history at General Assembly's Institution (now Scottish Church College). During his youth, he went through a period of deep spiritual skepticism. He joined the Brahmo Samaj but remained unsatisfied with theoretical debates, asking every religious teacher he met the same question: *"Have you seen God?"*
+Narendranath was highly intelligent, studying Western philosophy, logic, and history at General Assembly's Institution (now [Scottish Church College](/places/scottish-church-college)). During his youth, he went through a period of deep spiritual skepticism. He joined the Brahmo Samaj but remained unsatisfied with theoretical debates, asking every religious teacher he met the same question: *"Have you seen God?"*
 
 In 1881, he met **Sri Ramakrishna** at Dakshineswar. When Narendranath asked his question, Ramakrishna replied instantly: *"Yes, I have seen Him. I see Him as I see you here, only in a much intenser sense."* Narendra was deeply moved by Ramakrishna's spiritual purity, eventually accepting him as his guru.
 

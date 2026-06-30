@@ -10,7 +10,7 @@ facts:
   Occupation: "Founder, Emotional Wellbeing Advocate, Coach"
   Organization: "Kartavyalife"
   Role: "Founder & CEO"
-  Education: "B.Sc. in Economics (Shri Shikshayatan College)"
+  Education: "B.Sc. in Economics ([Shri Shikshayatan College](/places/shri-shikshayatan-college))"
   Known for: "Kartavyalife, PeerSpace, Founders Unfiltered"
   Certification: "Depression Counselling Diploma: Advanced Level"
   Languages: "Bengali, English"
@@ -29,7 +29,7 @@ Her work focuses on helping people feel heard, understood, and valued. Kartavyal
 
 ## Early Life and Education
 
-Nidhi Agarwal completed her Bachelor’s degree in Science with Economics from **Shri Shikshayatan College**, **[Kolkata](/places/kolkata)**, between 2018 and 2021. During her college years, she participated in academic and extracurricular activities including wall magazine presentations, youth leadership programs, workshops, and Model United Nations. 
+Nidhi Agarwal completed her Bachelor’s degree in Science with Economics from **[Shri Shikshayatan College](/places/shri-shikshayatan-college)**, **[Kolkata](/places/kolkata)**, between 2018 and 2021. During her college years, she participated in academic and extracurricular activities including wall magazine presentations, youth leadership programs, workshops, and Model United Nations. 
 
 She completed her higher secondary education at **Agrasain Balika Shiksha Sadan**, where she studied science and was actively involved in school events, debates, science exhibitions, and youth-focused programs. 
 

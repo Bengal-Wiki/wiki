@@ -24,7 +24,7 @@ Bose was a charismatic leader who served as the President of the Indian National
 
 Bose was born in Cuttack, Bengal Province, to Janakinath Bose, an advocate, and Prabhavati Devi. He was the ninth of fourteen children. 
 
-He was an exceptionally brilliant student, studying at the Protestant European School in Cuttack, Ravenshaw Collegiate School, and later at Presidency College, Calcutta. He was deeply influenced by the teachings of Swami Vivekananda and Ramakrishna Paramahansa, which shaped his spiritual nationalism. 
+He was an exceptionally brilliant student, studying at the Protestant European School in Cuttack, Ravenshaw Collegiate School, and later at [Presidency College](/places/presidency-university), Calcutta. He was deeply influenced by the teachings of Swami Vivekananda and Ramakrishna Paramahansa, which shaped his spiritual nationalism. 
 
 In 1919, at his father's request, Bose went to England to prepare for the Indian Civil Service (ICS) examination. He placed fourth in the highly competitive exam. However, refusing to serve the British colonial government, he resigned from the civil service in 1921 and returned to India to join the nationalist movement led by Mahatma Gandhi.
 

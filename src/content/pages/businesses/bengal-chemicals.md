@@ -25,7 +25,7 @@ Launched during the Swadeshi movement, BCPL was born out of a patriotic drive to
 ## History and Origins
 
 ### The Vision of Acharya P. C. Ray
-The origins of the company trace back to 1892 when Acharya Prafulla Chandra Ray, then a young assistant professor of chemistry at Presidency College, Calcutta, began manufacturing chemical formulations in his home at 91 Upper Circular Road. Ray was deeply troubled by the dependency of colonial India on imported European medicines and chemicals, as well as the high rate of unemployment among young Bengali graduates.
+The origins of the company trace back to 1892 when Acharya Prafulla Chandra Ray, then a young assistant professor of chemistry at [Presidency College](/places/presidency-university), Calcutta, began manufacturing chemical formulations in his home at 91 Upper Circular Road. Ray was deeply troubled by the dependency of colonial India on imported European medicines and chemicals, as well as the high rate of unemployment among young Bengali graduates.
 
 With a modest initial capital of ₹700, Ray began preparing pharmaceutical ingredients using local materials:
 1. **Sourcing**: He collected raw herbs, minerals, and indigenous medicinal compounds.

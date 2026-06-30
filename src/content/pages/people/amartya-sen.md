@@ -23,7 +23,7 @@ He was awarded the **Nobel Memorial Prize in Economic Sciences** in 1998 and the
 
 Sen was born in Santiniketan, Bengal. His father Ashutosh Sen was a professor of chemistry at Dhaka University, and his mother Amita Sen was a writer and close associate of Rabindranath Tagore. Tagore himself chose the name "Amartya", meaning "immortal" or "heavenly". 
 
-Sen began his formal education at St. Gregory's School in Dhaka. Following the partition of India in 1947, his family moved to West Bengal, and Sen studied at Santiniketan's Patha Bhavana school, which emphasized outdoor education and critical inquiry. He went on to study at Presidency College, Calcutta, where he earned a BA in Economics with first-class honors. He then entered Trinity College, Cambridge, in 1953, where he earned his BA, MA, and PhD in Economics under the supervision of prominent economists Joan Robinson and Piero Sraffa.
+Sen began his formal education at St. Gregory's School in Dhaka. Following the partition of India in 1947, his family moved to West Bengal, and Sen studied at Santiniketan's Patha Bhavana school, which emphasized outdoor education and critical inquiry. He went on to study at [Presidency College](/places/presidency-university), Calcutta, where he earned a BA in Economics with first-class honors. He then entered Trinity College, Cambridge, in 1953, where he earned his BA, MA, and PhD in Economics under the supervision of prominent economists Joan Robinson and Piero Sraffa.
 
 ## Key Economic Theories
 

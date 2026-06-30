@@ -25,7 +25,7 @@ Ray directed 36 films, including feature films, documentaries and shorts. He was
 
 The Ray family can be traced back for at least ten generations. Satyajit Ray's grandfather, Upendrakishore Ray, was a writer, illustrator, philosopher, publisher, amateur astronomer and a leader of the Brahmo Samaj. Upendrakishore's son, Sukumar Ray, was a pioneering Bengali writer of nonsense verse and children's literature, an illustrator and a critic. 
 
-Satyajit was born to Sukumar and Suprabha Ray in Calcutta. Sukumar Ray died when Satyajit was barely two, and Satyajit was raised by his mother on her brother's modest income. Ray studied at Ballygunge Government High School and went on to complete his BA in Economics at Presidency College in Calcutta, though his interest was always in the fine arts. In 1940, his mother insisted that he attend Visva-Bharati University in Santiniketan, founded by Rabindranath Tagore. 
+Satyajit was born to Sukumar and Suprabha Ray in Calcutta. Sukumar Ray died when Satyajit was barely two, and Satyajit was raised by his mother on her brother's modest income. Ray studied at Ballygunge Government High School and went on to complete his BA in Economics at [Presidency College](/places/presidency-university) in Calcutta, though his interest was always in the fine arts. In 1940, his mother insisted that he attend Visva-Bharati University in Santiniketan, founded by Rabindranath Tagore. 
 
 ## Cinematic Career
 

@@ -8,7 +8,7 @@ facts:
   Died: "23 November 1937 (aged 78)<br>Giridih, Bihar, British India"
   Fields: "Physics, biophysics, botany, plant physiology"
   Known for: "Millimeter wave radio, crescograph, plant response to stimuli"
-  Institution: "Presidency College, Calcutta<br>Bose Institute"
+  Institution: "[Presidency College](/places/presidency-university), Calcutta<br>Bose Institute"
   Notable awards: "Fellow of the Royal Society (1920)<br>Knight Bachelor (1917)"
 categories:
   - "Eminent people from Bengal"
@@ -28,13 +28,13 @@ In 1917, he established the **Bose Institute** in Calcutta, the first modern sci
 
 ## Early Life and Education
 
-Bose was born in Mymensingh (now in Bangladesh) to Bhagawan Chandra Bose, a leader of the Brahmo Samaj and a deputy magistrate. Bhagawan Chandra wanted his son to learn his native tongue and culture before foreign languages, so Jagadish studied in a traditional vernacular school (*Pathsala*) before joining St. Xavier's School and College in Calcutta.
+Bose was born in Mymensingh (now in Bangladesh) to Bhagawan Chandra Bose, a leader of the Brahmo Samaj and a deputy magistrate. Bhagawan Chandra wanted his son to learn his native tongue and culture before foreign languages, so Jagadish studied in a traditional vernacular school (*Pathsala*) before joining St. Xavier's School and [College](/places/st-xaviers-college) in Calcutta.
 
 Bose went to England in 1880 to study medicine at London University but had to withdraw due to ill health (chronic fever). He then secured a scholarship to study Natural Science at Christ's College, Cambridge, where he graduated with a Natural Sciences Tripos, and completed a BSc from the University of London in 1884.
 
 ## Scientific Contributions
 
-Upon returning to India, Bose joined Presidency College, Calcutta, as a professor of physics. He faced severe racial discrimination, being offered only one-third of the salary of British professors. Bose protested by refusing to accept any salary for three years, while continuing his teaching duties flawlessly, until the college administration relented and paid him full retro-active salary.
+Upon returning to India, Bose joined [Presidency College](/places/presidency-university), Calcutta, as a professor of physics. He faced severe racial discrimination, being offered only one-third of the salary of British professors. Bose protested by refusing to accept any salary for three years, while continuing his teaching duties flawlessly, until the college administration relented and paid him full retro-active salary.
 
 ### 1. Pioneer of Radio and Microwave Optics
 
