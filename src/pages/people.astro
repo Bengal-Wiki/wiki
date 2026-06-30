@@ -53,6 +53,17 @@ const totalPages = Math.max(1, Math.ceil(people.length / ITEMS_PER_PAGE));
 							{known && (
 								<p class="card-highlight"><strong>Known for:</strong> <span set:html={known}></span></p>
 							)}
+							{person.data.categories && person.data.categories.length > 0 && (
+								<p class="card-categories">
+									<strong>Categories:</strong>{' '}
+									{person.data.categories.map((cat, catIdx) => (
+										<span>
+											{catIdx > 0 && ' | '}
+											<a href={`/category/${cat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')}`}>{cat}</a>
+										</span>
+									))}
+								</p>
+							)}
 							<div class="card-footer-action">
 								<a href={`/${person.id}`} class="read-bio-btn">Read Biography &rarr;</a>
 							</div>
@@ -335,6 +346,22 @@ const totalPages = Math.max(1, Math.ceil(people.length / ITEMS_PER_PAGE));
 		padding: 6px 8px;
 		border-radius: 4px;
 		border-left: 3px solid #b11226;
+	}
+
+	.card-categories {
+		font-size: 11px;
+		color: var(--wiki-text-muted);
+		margin-top: 4px;
+		margin-bottom: 8px;
+		line-height: 1.4;
+	}
+	.card-categories a {
+		color: var(--wiki-link);
+		text-decoration: none;
+	}
+	.card-categories a:hover {
+		color: var(--wiki-link-hover);
+		text-decoration: underline;
 	}
 
 	.card-footer-action {

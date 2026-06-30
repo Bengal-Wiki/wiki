@@ -6,7 +6,7 @@ image_caption: "Sundarbans delta landscape, showing mangrove channels."
 facts:
   Type: "Mangrove forest, National Park"
   Area: "10,000 square kilometers (3,900 sq mi)"
-  Location: "West Bengal, India & Khulna, Bangladesh"
+  Location: "* Khulna Division, flag|Bangladesh"
   Coordinates: "21.94° N, 89.18° E"
   Designation: "UNESCO World Heritage Site (1987)"
   Keystone species: "Royal Bengal Tiger (Panthera tigris tigris)"

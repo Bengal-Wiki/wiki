@@ -28,78 +28,11 @@ const domainDisplayName = displayHost.replace(/^www\./i, '');
 
 // Maps category strings to actual active portal directories
 function getCategoryUrl(category: string) {
-	const cat = category.toLowerCase();
-	if (
-		cat.includes('people') || 
-		cat.includes('writer') || 
-		cat.includes('author') ||
-		cat.includes('novelist') ||
-		cat.includes('laureate') || 
-		cat.includes('leader') || 
-		cat.includes('reformer') || 
-		cat.includes('pioneer') || 
-		cat.includes('physicist') || 
-		cat.includes('botanist') || 
-		cat.includes('filmmaker') || 
-		cat.includes('philosopher') || 
-		cat.includes('spiritual') || 
-		cat.includes('educator') ||
-		cat.includes('doctor') ||
-		cat.includes('physician') ||
-		cat.includes('medical') ||
-		cat.includes('singer') ||
-		cat.includes('musician') ||
-		cat.includes('artist')
-	) {
-		return '/people';
-	}
-	if (
-		cat.includes('places') || 
-		cat.includes('town') || 
-		cat.includes('city') || 
-		cat.includes('station') || 
-		cat.includes('capital') || 
-		cat.includes('temple') || 
-		cat.includes('monument') || 
-		cat.includes('park') || 
-		cat.includes('destination') || 
-		cat.includes('ecoregion')
-	) {
-		return '/places';
-	}
-	if (
-		cat.includes('songs') || 
-		cat.includes('anthem') || 
-		cat.includes('music') || 
-		cat.includes('geeti')
-	) {
-		return '/songs';
-	}
-	if (
-		cat.includes('business') || 
-		cat.includes('company') || 
-		cat.includes('enterprise') || 
-		cat.includes('industry') || 
-		cat.includes('brand') || 
-		cat.includes('conglomerate') || 
-		cat.includes('pharmaceutical') ||
-		cat.includes('restaurant') ||
-		cat.includes('cuisine') ||
-		cat.includes('food')
-	) {
-		return '/businesses';
-	}
-	if (
-		cat.includes('book') || 
-		cat.includes('novel') || 
-		cat.includes('poetry') || 
-		cat.includes('anthology') || 
-		cat.includes('literature') || 
-		cat.includes('translation')
-	) {
-		return '/books';
-	}
-	return '/';
+	const slug = category
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/(^-|-$)+/g, '');
+	return `/category/${slug}`;
 }
 
 function cleanHeadingText(text: string): string {

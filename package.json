@@ -2,10 +2,11 @@
   "name": "bengal.wiki",
   "type": "module",
   "version": "0.0.1",
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/split-sitemap.js",
     "preview": "astro preview",
     "astro": "astro",
     "convert-images": "node scripts/convert-to-webp.js"

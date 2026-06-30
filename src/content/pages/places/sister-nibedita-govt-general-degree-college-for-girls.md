@@ -1,15 +1,60 @@
 ---
-title: "Sister Nibedita Govt General Degree College for Girls"
-description: "Information about Sister Nibedita Govt General Degree College for Girls, a prominent degree college located in Kolkata, West Bengal."
+title: "Sister Nibedita Govt. General Degree College for Girls"
+description: "Information about Sister Nibedita Govt. General Degree College for Girls, a general degree college located in Hastings House, Kolkata district, West Bengal."
 image_type: "monument"
-image_caption: "Campus of Sister Nibedita Govt General Degree College for Girls"
+image_caption: "Campus of Sister Nibedita Govt. General Degree College for Girls"
 facts:
-  Type: "Degree College"
+  Type: "General Degree College"
   Established: "Information to be updated"
-  Location: "Kolkata, West Bengal"
-  Affiliation: "University of Calcutta"
+  Location: "Hastings House, Kolkata district, West Bengal"
+  Affiliation: "Information to be updated"
+  Region Bucket: "Kolkata and outskirts"
+  Area/District Scope: "Kolkata district"
+  Inferred District: "Kolkata"
+  Focus: "Management / business; Women-focused institution; Arts / science / commerce general degree"
+  Target Programmes: "General degree graduates; commerce/arts/science; BBA/BCA where offered"
+  Talent Segment: "General Kolkata college"
+  Hiring Priority: "Medium"
+  Tier Focus: "General outreach"
+  Recruitment Fit: "Useful for business, operations and management hiring"
+  Recommended Contact: "contact@snggdcg.ac.in"
+  General Email: "contact@snggdcg.ac.in"
+  Primary Email: "contact@snggdcg.ac.in"
+  All Emails: "contact@snggdcg.ac.in"
+  Phone: "033-2479-7100"
+  Website: "https://www.snggdcg.ac.in"
+  Contact Readiness: "Ready for first outreach"
+  Enrichment Note: "Rich profile with usable contact path from source data."
+  Overview: "Sister Nibedita Govt. General Degree College for Girls is listed as an educational institution in Hastings House, Kolkata district, West Bengal."
+  Programme & Hiring Details: "- **Target programmes:** General degree graduates; commerce/arts/science; BBA/BCA where offered - **Talent segment:** General Kolkata college - **Hiring priority:** Medium - **Tier focus:** General outreach"
 categories:
   - "Colleges in Kolkata"
   - "Educational Institutions in Bengal"
 entity_type: "place"
 ---
+
+# Sister Nibedita Govt. General Degree College for Girls
+
+## Overview
+
+Sister Nibedita Govt. General Degree College for Girls is listed as an educational institution in Hastings House, Kolkata district, West Bengal.
+
+## Key facts
+- **Type:** General Degree College
+- **Established:** Information to be updated
+- **Location:** Hastings House, Kolkata district, West Bengal
+- **Affiliation:** Information to be updated
+- **Region bucket:** Kolkata and outskirts
+- **Area / district / scope:** Kolkata district
+
+## Programmes and hiring relevance
+- **Target programmes:** General degree graduates; commerce/arts/science; BBA/BCA where offered
+- **Talent segment:** General Kolkata college
+- **Hiring priority:** Medium
+- **Tier focus:** General outreach
+
+## Recruitment / contact details
+- **Recommended recruitment contact:** contact@snggdcg.ac.in
+- **General email:** contact@snggdcg.ac.in
+- **Phone:** 033-2479-7100
+- **Website:** https://www.snggdcg.ac.in

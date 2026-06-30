@@ -12,19 +12,21 @@ The platform is designed to look like a modernized, premium version of a classic
 * **Fully Responsive & Full-Width**: No left sidebars. A spacious, readable, centered layout that responsively fits mobile devices (collapsing Table of Contents, swipable tab bars, and stacked infoboxes).
 * **Smart SVG Graphical Placeholders**: A custom inline vector generator (`SvgPlaceholder.astro`) that dynamically outputs rich, lightweight illustrations based on article categories (e.g., stylized portraits for people, terracotta arches for monuments, hills/tea gardens for nature, and contour locator maps for places) instead of blank gray boxes.
 * **Dynamic Autocomplete Search**: An interactive autocomplete search bar (`WikiSearch.astro`) powered by a static search index compiled at build time (`search.json.ts`), supporting full keyboard navigation (`ArrowUp`, `ArrowDown`, `Enter`, `Escape`).
-* **Interactive Facts InfoBox**: A floating fact card component (`InfoBox.astro`) that automatically maps frontmatter parameters to structured tables.
-* **Automatic Table of Contents**: Dynamic caught-all route (`[...slug].astro`) parses headings and automatically inserts a collapsible "Contents [hide/show]" block in long-form articles.
+* **Interactive Facts InfoBox**: A floating fact card component (`InfoBox.astro`) that automatically maps frontmatter parameters to structured tables, converting inline bullet points and markdown bolding into HTML formatting dynamically.
+* **Automatic Table of Contents**: Dynamic catch-all route (`[...slug].astro`) parses headings and automatically inserts a collapsible "Contents [hide/show]" block in long-form articles.
 * **Dynamic Database Statistics**: Special `Special:Statistics` page (`statistics.astro`) that dynamically tracks database sizes and lists an active directories index.
 * **100% Operational Git Actions**: Replaced mock logins with a Git platform bar. The classic tabs (**Read**, **View Source**, and **View History**) dynamically map to the active source file's location and commit logs directly on GitHub.
+* **Automated XML Sitemap Index Splitting**: A custom post-build script (`scripts/split-sitemap.js`) segments the compiled sitemap automatically by category (`sitemap-main.xml`, `sitemap-places.xml`, `sitemap-people.xml`) and overwrites `sitemap.xml` with a sitemap index for search engine optimization.
 
 ---
 
 ## Tech Stack & Utilities
 
-1. **Framework**: [Astro v6](https://astro.build) (delivering zero-Javascript, static HTML by default).
+1. **Framework**: [Astro v7](https://astro.build) (delivering zero-Javascript, static HTML by default).
 2. **Styling**: Vanilla HSL-based CSS variables, ensuring light-weight load speeds and modular styling rules.
-3. **Database**: Decentralized local Markdown (`.md`) files.
+3. **Database**: Decentralized local Markdown (`.md`) files (includes 580+ enriched profiles for colleges and universities in West Bengal).
 4. **Validation**: Strict schema validation using [Zod](https://zod.dev) inside the Astro content collections layer.
+5. **Package Management**: Specifying `pnpm@11.8.0` in `package.json` for deterministic package resolution and running on Node 24 runners in CI/CD.
 
 ---
 

@@ -49,6 +49,24 @@ function processLinks(raw: string): string {
 		(_, email) => `<a href="mailto:${email}">${email}</a>`
 	);
 
+	// 4. Bold formatting: **text** -> <strong>text</strong>
+	result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+	// 5. Italic formatting: *text* -> <em>text</em>
+	result = result.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+	// 6. Convert markdown list bullets into line breaks or bulleted structure
+	let hasLeadingBullet = false;
+	if (result.startsWith('- ')) {
+		result = result.substring(2);
+		hasLeadingBullet = true;
+	}
+	result = result.replace(/\n\s*-\s+/g, '<br/>• ');
+	result = result.replace(/\s+-\s+/g, '<br/>• ');
+	if (hasLeadingBullet || result.includes('<br/>')) {
+		result = '• ' + result;
+	}
+
 	return result;
 }
 ---

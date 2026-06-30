@@ -11,7 +11,7 @@ facts:
   Organization: "[UKG](https://www.ukg.com/)"
   Role: "Staff Software Engineer"
   Education: "B.Tech in Computer Engineering (SVIST)<br>PGD in IT & Systems Management (NMIMS)"
-  Publications: "*Digital Bharat: AI & Computing*<br>*Pointers in C: Core Concepts at a Glance*"
+  Publications: "*[Digital Bharat: AI & Computing](/books/digital-bharat)*<br>*[Pointers in C: Core Concepts at a Glance](/books/pointers-in-c)*"
   Known for: "SaaS backend scaling, AI/LLM integrations, Chaos engineering"
   Technical Skills: "Java, NestJS, TypeScript, Kubernetes, LangChain, Docker"
   Website: "[sumitkar.in](https://www.sumitkar.in)"
@@ -59,8 +59,8 @@ Between June 2022 and February 2024, he worked as a **Software Engineer III** at
 ## Publications & Writing
 
 Sumit is passionate about making technical knowledge accessible and engaging:
-* **Digital Bharat: AI and Computing:** Published in December 2024, this book serves as a jargon-free, empowering introduction to computers and artificial intelligence, designed for children, seniors, and parents alike.
-* **Pointers in C: Core Concepts at a Glance:** Co-authored in late 2024 with Dr. Bikash Debnath, Ujjwal Sir, Chayan Sir, and Nandan Sir, this textbook simplifies pointer concepts for students and serves as a compact study resource for programming interviews.
+* **[Digital Bharat: AI & Computing](/books/digital-bharat):** Published in December 2024, this book serves as a jargon-free, empowering introduction to computers and artificial intelligence, designed for children, seniors, and parents alike.
+* **[Pointers in C: Core Concepts at a Glance](/books/pointers-in-c):** Co-authored in late 2024 with Dr. Bikash Debnath, Ujjwal Sir, Chayan Sir, and Nandan Sir, this textbook simplifies pointer concepts for students and serves as a compact study resource for programming interviews.
 
 ## Achievements & Accolades
 
