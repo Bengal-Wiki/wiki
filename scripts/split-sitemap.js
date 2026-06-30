@@ -2,37 +2,62 @@ import fs from 'fs';
 import path from 'path';
 
 const distDir = path.resolve('./dist');
-const originalSitemapPath = path.join(distDir, 'sitemap.xml');
+const siteUrl = 'https://bengal.wiki';
+const chunkSize = 100; // Granular chunks of 100 URLs each
 
-if (!fs.existsSync(originalSitemapPath)) {
-    console.error('Error: sitemap.xml not found in dist/. Please run astro build first.');
+console.log('Crawling built files inside dist/ to generate granular sitemaps...');
+
+function getHtmlFiles(dir, fileList = []) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+        if (stat.isDirectory()) {
+            getHtmlFiles(filePath, fileList);
+        } else if (file === 'index.html') {
+            fileList.push(filePath);
+        }
+    }
+    return fileList;
+}
+
+if (!fs.existsSync(distDir)) {
+    console.error('Error: dist/ directory not found. Please run build first.');
     process.exit(1);
 }
 
-console.log('Parsing sitemap.xml to split into smaller files...');
+const htmlFiles = getHtmlFiles(distDir);
+const urls = [];
 
-const content = fs.readFileSync(originalSitemapPath, 'utf8');
-
-// Parse URLs using simple regex to avoid external parser dependency
-const urlRegex = /<url>[\s\S]*?<\/url>/g;
-const urls = content.match(urlRegex) || [];
-
-const mainUrls = [];
-const placesUrls = [];
-const peopleUrls = [];
-
-for (const urlMarkup of urls) {
-    const locMatch = urlMarkup.match(/<loc>(.*?)<\/loc>/);
-    if (!locMatch) continue;
+for (const file of htmlFiles) {
+    const relativePath = path.relative(distDir, file);
     
-    const loc = locMatch[1];
-    if (loc.includes('/places/')) {
-        placesUrls.push(urlMarkup);
-    } else if (loc.includes('/people/')) {
-        peopleUrls.push(urlMarkup);
-    } else {
-        mainUrls.push(urlMarkup);
+    // Convert relative path to URL path
+    let urlPath = '/' + relativePath.replace(/\\/g, '/');
+    
+    // Remove index.html
+    urlPath = urlPath.replace(/\/index\.html$/, '');
+    
+    // Handle home index page
+    if (urlPath === '') {
+        urlPath = '/';
     }
+    
+    // Exclude 404 page if it exists
+    if (urlPath.includes('404')) continue;
+    
+    const fullUrl = siteUrl + urlPath;
+    urls.push(fullUrl);
+}
+
+// Sort URLs alphabetically
+urls.sort();
+
+console.log(`Found ${urls.length} built URLs in dist/. Dividing into chunks of ${chunkSize}...`);
+
+const chunks = [];
+for (let i = 0; i < urls.length; i += chunkSize) {
+    chunks.push(urls.slice(i, i + chunkSize));
 }
 
 const lastmod = new Date().toISOString().split('T')[0];
@@ -45,34 +70,54 @@ const sitemapHeader = `<?xml version="1.0" encoding="UTF-8"?>
 
 const sitemapFooter = `</urlset>`;
 
-function saveSitemap(filename, urlList) {
-    const filePath = path.join(distDir, filename);
-    const content = sitemapHeader + '\n' + urlList.join('\n') + '\n' + sitemapFooter;
-    fs.writeFileSync(filePath, content, 'utf8');
-    console.log(`Saved ${filename} with ${urlList.length} URLs.`);
+// Clean up any old sitemap files
+const oldFiles = fs.readdirSync(distDir);
+for (const file of oldFiles) {
+    if (file.startsWith('sitemap-') && file.endsWith('.xml')) {
+        fs.unlinkSync(path.join(distDir, file));
+    }
 }
 
-// Save split sitemaps
-saveSitemap('sitemap-main.xml', mainUrls);
-saveSitemap('sitemap-places.xml', placesUrls);
-saveSitemap('sitemap-people.xml', peopleUrls);
+// Save chunk sitemaps
+const sitemapRefs = [];
+chunks.forEach((chunk, index) => {
+    const filename = `sitemap-part-${index + 1}.xml`;
+    const chunkMarkup = chunk.map(url => {
+        let priority = '0.5';
+        let changefreq = 'monthly';
+        
+        if (url === siteUrl + '/') {
+            priority = '1.0';
+            changefreq = 'daily';
+        } else if (url.includes('/category/') || ['/people', '/places', '/songs', '/businesses', '/books'].some(p => url.endsWith(p))) {
+            priority = '0.8';
+            changefreq = 'weekly';
+        }
+        
+        return `  <url>
+    <loc>${url}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${changefreq}</changefreq>
+    <priority>${priority}</priority>
+  </url>`;
+    });
+    
+    const filePath = path.join(distDir, filename);
+    const content = sitemapHeader + '\n' + chunkMarkup.join('\n') + '\n' + sitemapFooter;
+    fs.writeFileSync(filePath, content, 'utf8');
+    console.log(`Saved ${filename} with ${chunk.length} URLs.`);
+    sitemapRefs.push(filename);
+});
 
 // Generate sitemap index
 const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>https://bengal.wiki/sitemap-main.xml</loc>
+${sitemapRefs.map(ref => `  <sitemap>
+    <loc>${siteUrl}/${ref}</loc>
     <lastmod>${lastmod}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://bengal.wiki/sitemap-places.xml</loc>
-    <lastmod>${lastmod}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://bengal.wiki/sitemap-people.xml</loc>
-    <lastmod>${lastmod}</lastmod>
-  </sitemap>
+  </sitemap>`).join('\n')}
 </sitemapindex>`;
 
-fs.writeFileSync(originalSitemapPath, sitemapIndex, 'utf8');
-console.log('Overwrote sitemap.xml with the sitemap index.');
+const indexSitemapPath = path.join(distDir, 'sitemap.xml');
+fs.writeFileSync(indexSitemapPath, sitemapIndex, 'utf8');
+console.log(`Saved sitemap index at sitemap.xml listing ${sitemapRefs.length} granular files.`);
