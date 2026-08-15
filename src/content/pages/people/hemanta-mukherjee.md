@@ -1,7 +1,7 @@
 ---
 title: "Hemanta Mukherjee"
 description: "A legendary Indian playback singer, composer, and music director who dominated Bengali and Hindi film music for decades, widely known for his deep baritone voice."
-image: "/images/hemanta-mukherjee.png"
+image: ""
 image_type: "person"
 image_caption: "Retro photograph of Hemanta Mukherjee singing."
 entity_type: "singer"
